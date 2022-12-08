@@ -13,5 +13,8 @@
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "mockery/mockery": "^1.5"
+    },
+    "require": {
+        "symfony/console": "^6.2"
     }
 }
