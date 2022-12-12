@@ -1,33 +1,83 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Infrastructure\Console\Commands;
 
+use App\AppBundle\Domains\EquationManager;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\{InputArgument, InputInterface};
 
 #[AsCommand(
     name: 'app:solve-equation',
 )]
 class SolveEquationCommand extends Command
 {
+    protected static $defaultDescription = 'Решает квадратное уравнение';
+
+    protected function configure(): void
+    {
+        $this
+            ->addArgument('a', InputArgument::OPTIONAL, 'Значение а')
+            ->addArgument('b', InputArgument::OPTIONAL, 'Значение b')
+            ->addArgument('c', InputArgument::OPTIONAL, 'Значение c');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // ... put here the code to create the user
+        $a = $input->getArgument('a');
+        $b = $input->getArgument('b');
+        $c = $input->getArgument('c');
 
-        // this method must return an integer number with the "exit status code"
-        // of the command. You can also use these constants to make code more readable
+        $output->writeln([
+            'Решение квадратного уравнения',
+            '============',
+            '',
+        ]);
 
-        // return this if there was no problem running the command
-        // (it's equivalent to returning int(0))
+        $a = $this->inputFormatter($a);
+        $b = $this->inputFormatter($b);
+        $c = $this->inputFormatter($c);
+
+        $equation = new EquationManager();
+        $value = $equation::solve($a, $b, $c);
+
+        if ($value === null) {
+            $output->write('Не передан обязательный аттрибут \'a\'');
+            return Command::FAILURE;
+        }
+
+        if ($value === []) {
+            $output->write('Корней нет');
+            return Command::SUCCESS;
+        }
+        [$x1, $x2] = $value;
+
+        $output->writeln([
+            'Корни квадратного уравнения:',
+            'x1=' . $x1,
+            'x2=' . $x2,
+        ]);
+
         return Command::SUCCESS;
+    }
 
-        // or return this if some error happened during the execution
-        // (it's equivalent to returning int(1))
-        // return Command::FAILURE;
-
-        // or return this to indicate incorrect command usage; e.g. invalid options
-        // or missing arguments (it's equivalent to returning int(2))
-        // return Command::INVALID
+    /**
+     * Форматирует входные данные
+     * @FIXME найти способ лучше (проблема в том, что символ "-" консоль воспринимает как название параметра,
+     * поэтому отрицательные числа приходится передавать в ''
+     *
+     * @param string|null $value
+     * @return float|null
+     */
+    private function inputFormatter(string|null $value): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+        $value = str_replace("'", "", $value);
+        return (float)$value;
     }
 }
