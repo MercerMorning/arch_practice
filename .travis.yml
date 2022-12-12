@@ -1,0 +1,9 @@
+language: php
+
+php:
+  - 8.1
+
+before_script:
+  - composer --dev install
+
+script: ./vendor/bin/phpunit tests
