@@ -42,10 +42,10 @@ class SolveEquationCommand extends Command
         $c = $this->inputFormatter($c);
 
         $equation = new EquationManager();
-        $value = $equation::solve($a, $b, $c);
-
-        if ($value === null) {
-            $output->write('Не передан обязательный аттрибут \'a\'');
+        try {
+            $value = $equation::solve($a, $b, $c);
+        } catch (\Exception $e) {
+            $output->write($e->getMessage());
             return Command::FAILURE;
         }
 
