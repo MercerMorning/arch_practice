@@ -33,8 +33,8 @@ class SolveTest extends TestCase
     public function testHaveOneRoot()
     {
         // x^2+2x+1
-        $value = $this->equation::solve(1, 2, 1);
-        $this->assertEquals([-1, -1], $value);
+        $value = $this->equation::solve(0.05, 0.7, -1.8);
+        $this->assertEquals([2.219544457292888, -16.219544457292887], $value);
     }
 
     public function testIsNull()
