@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\AppBundle\Domains\EquationManager;
+use App\AppBundle\Domains\Exceptions\EqualsZeroException;
 use PHPUnit\Framework\TestCase;
 
 class SolveTest extends TestCase
@@ -38,8 +39,8 @@ class SolveTest extends TestCase
 
     public function testIsNull()
     {
+        $this->expectException(EqualsZeroException::class);
         // a=0
-        $value = $this->equation::solve(0);
-        $this->assertNull($value);
+        $this->equation::solve(0);
     }
 }
