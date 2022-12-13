@@ -43,4 +43,34 @@ class SolveTest extends TestCase
         // a=0
         $this->equation::solve(0);
     }
+
+    /**
+     * @dataProvider otherTypesProvider
+     */
+    public function testWithOtherTypes($arguments, $result)
+    {
+        $value = $this->equation::solve($arguments['a'], $arguments['b'], $arguments['c']);
+        $this->assertEquals($result, $value);
+    }
+
+    private function otherTypesProvider()
+    {
+        return [
+            ['arguments' => [
+                'a' => '1',
+                'b' => '0',
+                'c' => '1'
+            ], 'result' => []],
+            ['arguments' => [
+                'a'=>'1',
+                'b' => '0',
+                'c' => '-1'
+            ], 'result' => [1, -1]],
+            ['arguments' => [
+                'a' => '0.05',
+                'b' => '0.7',
+                'c' => '-1.8'
+            ], 'result' => [2.219544457292888, -16.219544457292887]],
+        ];
+    }
 }
