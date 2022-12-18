@@ -46,7 +46,7 @@ class EquationManager
      */
     private static function CheckLessThanZero(float $num): bool
     {
-        return $num < PHP_FLOAT_EPSILON && $num >= 0;
+        return abs($num) < PHP_FLOAT_EPSILON && $num >= 0;
     }
 
     /**
