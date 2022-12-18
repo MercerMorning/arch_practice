@@ -25,7 +25,7 @@ class EquationManager
         }
 
         $discriminant = $b * $b - 4 * $a * $c;
-        if ($discriminant > 0) {
+        if (self::CheckMoreThanZero($discriminant)) {
             $x1 = (-$b + sqrt($discriminant)) / (2 * $a);
             $x2 = (-$b - sqrt($discriminant)) / (2 * $a);
         } elseif (self::CheckLessThanZero($discriminant)) {
@@ -47,5 +47,17 @@ class EquationManager
     private static function CheckLessThanZero(float $num): bool
     {
         return abs($num) < PHP_FLOAT_EPSILON && abs($num) >= 0;
+    }
+
+    /**
+     * Проверяет что число с плавающей точкой больше нуля
+     *
+     * @param float $num
+     *
+     * @return bool
+     */
+    private static function CheckMoreThanZero(float $num): bool
+    {
+        return abs($num) > PHP_FLOAT_EPSILON;
     }
 }
