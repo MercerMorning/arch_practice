@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Application\Command;
 
 use App\Application\Commands\BurnFuel;
+use App\Application\Exceptions\BurnFuelException;
 use App\Domain\FuelBurnableInterface;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -76,7 +77,7 @@ class BurnFuelTest extends TestCase
         $this->fuelBurnable->expects($this->never());
 
         $this->burnFuel->execute();
-        $this->expectException(Exception::class);
+        $this->expectException(BurnFuelException::class);
     }
 
     /**
