@@ -6,6 +6,7 @@ use App\Application\Commands\ChangeVelocity;
 use App\Domain\Coordinate;
 use App\Domain\VelocityChangableInterface;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class ChangeVelocityTest extends TestCase
 {
@@ -13,7 +14,10 @@ class ChangeVelocityTest extends TestCase
     {
         $stub = $this->createMock(VelocityChangableInterface::class);
         $stub->method('getVelocity')
-            ->willReturn(new Coordinate(7, 5));
+            ->will($this->onConsecutiveCalls(
+                new Coordinate(7, 5),
+                new Coordinate(1, 9)
+            ));
         $stub->method('getAngle')
             ->willReturn(1.5);
 
@@ -22,5 +26,19 @@ class ChangeVelocityTest extends TestCase
 
         $this->assertEquals(new Coordinate(1, 9), $stub->getVelocity());
     }
+
+    public function testChangeVelocityWithoutAngleAviable()
+    {
+        $this->expectException(Throwable::class);
+        $changeVelocityCommand = new ChangeVelocity(null);
+        $changeVelocityCommand->execute();
+    }
+
+    public function testChangeVelocityWithoutVelocityAvaiable()
+    {
+        $this->expectException(Throwable::class);
+        $changeVelocityCommand = new ChangeVelocity(null);
+        $changeVelocityCommand->execute();
+    }      
 
 }

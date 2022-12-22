@@ -6,16 +6,10 @@ use App\Domain\Coordinate;
 
 class VelocityChanger
 {
-    public static function makeChange(float $angle, Coordinate ...$coordinates)
-    {
-        $velocityModule = 0;
+    public static function makeChange(float $angle, Coordinate $velocity)
+    {       
+        $velocityModule  = sqrt(pow($velocity->getX(), 2) + pow($velocity->getY(), 2));
 
-        foreach ($coordinates as $coordinate) {
-            $velocityModule  += pow($coordinate, 2);
-        }
-
-        $velocityModule = sqrt($velocityModule);
-
-        return new Coordinate($velocityModule * cos($angle),  $velocityModule * sin($angle));
+        return new Coordinate($velocityModule * cos($angle),  $velocityModule * sin($angle));    
     }
 }
