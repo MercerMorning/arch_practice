@@ -6,10 +6,10 @@ use App\Domain\Coordinate;
 
 class VelocityChanger
 {
-    public static function makeChange(Coordinate $velocity, float $increment)
+    public static function makeChange(Coordinate $velocity, float $velocityCorrection)
     {       
-        $newX = $velocity->getX() * $increment;
-        $newY = $velocity->getY() * $increment;
+        $newX = $velocity->getX() * $velocityCorrection;
+        $newY = $velocity->getY() * $velocityCorrection;
         return new Coordinate ($newX, $newY);    
     }
 }

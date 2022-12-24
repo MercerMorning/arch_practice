@@ -18,10 +18,8 @@ class ChangeVelocityTest extends TestCase
                 new Coordinate(4, 8),
                 new Coordinate(6, 12)
             ));
-        $stub->method('getIncrement')
-            ->willReturn(1.5);
 
-        $changeVelocityCommand = new ChangeVelocity($stub);
+        $changeVelocityCommand = new ChangeVelocity($stub, 1.5);
         $changeVelocityCommand->execute();
 
         $this->assertEquals(new Coordinate(6, 12), $stub->getVelocity());
