@@ -15,23 +15,16 @@ class ChangeVelocityTest extends TestCase
         $stub = $this->createMock(VelocityChangableInterface::class);
         $stub->method('getVelocity')
             ->will($this->onConsecutiveCalls(
-                new Coordinate(7, 5),
-                new Coordinate(1, 9)
+                new Coordinate(4, 8),
+                new Coordinate(6, 12)
             ));
-        $stub->method('getAngle')
+        $stub->method('getIncrement')
             ->willReturn(1.5);
 
         $changeVelocityCommand = new ChangeVelocity($stub);
         $changeVelocityCommand->execute();
 
-        $this->assertEquals(new Coordinate(1, 9), $stub->getVelocity());
-    }
-
-    public function testChangeVelocityWithoutAngleAviable()
-    {
-        $this->expectException(Throwable::class);
-        $changeVelocityCommand = new ChangeVelocity(null);
-        $changeVelocityCommand->execute();
+        $this->assertEquals(new Coordinate(6, 12), $stub->getVelocity());
     }
 
     public function testChangeVelocityWithoutVelocityAvaiable()

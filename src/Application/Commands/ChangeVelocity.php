@@ -4,6 +4,7 @@ namespace App\Application\Commands;
 
 use App\Application\Helpers\VelocityChanger;
 use App\Domain\VelocityChangableInterface;
+use Exception;
 
 class ChangeVelocity implements CommandInterface
 {
@@ -20,7 +21,7 @@ class ChangeVelocity implements CommandInterface
     public function execute()
     {
         $this->object->setVelocity(
-            VelocityChanger::makeChange($this->object->getAngle(), $this->object->getVelocity())
+            VelocityChanger::makeChange($this->object->getVelocity(), $this->object->getIncrement())
         );
     }
 }
