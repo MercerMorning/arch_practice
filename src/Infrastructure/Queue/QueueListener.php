@@ -2,19 +2,28 @@
 
 namespace App\Infrastructure\Queue;
 
+use App\Infrastructure\Exceptions\HandlerInterface;
+use \Exception;
+
 class QueueListener
 {
-    public QueueStorageInterface $queueStorage;
+    private QueueStorageInterface $queueStorage;
+    public HandlerInterface $errorHandler;
 
-    public function __construct(QueueStorageInterface $queueStorage)
+    public function __construct(QueueStorageInterface $queueStorage, HandlerInterface $errorHandler)
     {
         $this->queueStorage = $queueStorage;
+        $this->errorHandler = $errorHandler;
     }
 
     public function listen(): void
     {
         while ($queueItem = $this->queueStorage->take()) {
-            $queueItem->execute();
+            try {
+                $queueItem->execute();
+            } catch (Exception $exception) {
+                $this->errorHandler->handle($exception);
+            }
         }
     }
 }
