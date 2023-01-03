@@ -15,7 +15,8 @@
         "mockery/mockery": "^1.5"
     },
     "require": {
-        "symfony/console": "^6.2"
+        "symfony/console": "^6.2",
+        "symfony/monolog-bundle": "^3.8"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit tests"
