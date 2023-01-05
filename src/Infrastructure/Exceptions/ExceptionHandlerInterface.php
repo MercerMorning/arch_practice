@@ -4,7 +4,7 @@ namespace App\Infrastructure\Exceptions;
 
 use Throwable;
 
-interface HandlerInterface
+interface ExceptionHandlerInterface
 {
     public function handle(Throwable $exception);
 }
