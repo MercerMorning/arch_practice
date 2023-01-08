@@ -14,7 +14,7 @@ class BurnFuelTest extends TestCase
 {
     public function setUp()
     {
-        $this->fuelBurnable = new $this->createMock(FuelBurnableInterface::class);
+        $this->fuelBurnable = $this->createMock(FuelBurnableInterface::class);
         $this->burnFuel     = new BurnFuel($this->fuelBurnable);
     }
 
