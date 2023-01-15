@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class BurnFuelTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->fuelBurnable = $this->createMock(FuelBurnableInterface::class);
         $this->burnFuel     = new BurnFuel($this->fuelBurnable);
@@ -74,10 +74,9 @@ class BurnFuelTest extends TestCase
         $this->fuelBurnable->expects($this->once())
             ->method('getVelocity')
             ->willReturn($input['velocity']);
-        $this->fuelBurnable->expects($this->never());
-
-        $this->burnFuel->execute();
         $this->expectException(BurnFuelException::class);
+        $this->burnFuel->execute();
+
     }
 
     /**
