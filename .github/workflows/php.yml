@@ -1,0 +1,17 @@
+name: Github Actions for PHP with PHPUnit Tests
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: composer --dev install
+
+      - name: Run test suite
+        run: composer run-script test
