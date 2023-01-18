@@ -13,6 +13,6 @@ class RepeatCommand implements CommandInterface
 
     public function execute()
     {
-        $this->command->execute();
+        return $this->command->execute();
     }
 }
