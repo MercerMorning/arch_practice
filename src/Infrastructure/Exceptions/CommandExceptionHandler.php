@@ -20,7 +20,6 @@ class CommandExceptionHandler implements ExceptionHandlerInterface
 
     public function handle(CommandInterface $command, Throwable $exception): void
     {
-        $repeatCommand = new RepeatCommand($this->queueStorage, $command);
-        $repeatCommand->execute();
+        $this->queueStorage::push(new RepeatCommand($command));
     }
 }
