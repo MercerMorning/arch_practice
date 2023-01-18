@@ -2,9 +2,10 @@
 
 namespace App\Infrastructure\Exceptions;
 
+use App\Application\Commands\CommandInterface;
 use Throwable;
 
 interface ExceptionHandlerInterface
 {
-    public function handle(Throwable $exception);
+    public function handle(CommandInterface $command, Throwable $exception);
 }
