@@ -13,7 +13,6 @@ class SecondRepeatCommand implements CommandInterface
 
     public function execute()
     {
-        throw new \ErrorException();
         return $this->command->execute();
     }
 }
