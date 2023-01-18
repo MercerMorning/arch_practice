@@ -4,6 +4,7 @@ use App\Application\Commands\Move;
 use App\Domain\MovableInterface;
 use App\Infrastructure\Exceptions\CommandExceptionHandler;
 use App\Infrastructure\Exceptions\ExceptionHandler;
+use App\Infrastructure\Exceptions\RuntimeExceptionHandler;
 use PHPUnit\Framework\TestCase;
 
 class CommandHandlerTest extends TestCase

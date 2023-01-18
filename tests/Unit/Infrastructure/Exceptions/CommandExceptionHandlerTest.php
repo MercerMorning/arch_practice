@@ -5,29 +5,30 @@ declare(strict_types=1);
 namespace Tests\Unit\Infrastructure\Exception;
 
 use App\Application\Commands\CommandInterface;
+use App\Application\Commands\Move;
+use App\Application\Commands\RepeatCommand;
+use App\Domain\MovableInterface;
 use App\Infrastructure\Exceptions\CommandExceptionHandler;
+use App\Infrastructure\Queue\QueueStorage;
 use App\Infrastructure\Queue\QueueStorageInterface;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class CommandExceptionHandlerTest extends TestCase
 {
     public function setUp(): void
     {
-        $this->command                 = $this->createMock(CommandInterface::class);
-
-        $this->queueStorage            = $this->createMock(QueueStorageInterface::class);
-        $this->commandExceptionHandler = new CommandExceptionHandler($this->queueStorage);
+        $this->commandExceptionHandler = new CommandExceptionHandler();
     }
 
     public function testExecuteWithException(): void
     {
-//        $this->command->expects($this->once())
-//            ->method('execute');
-//        $this->queueStorage->expects($this->once())
-//            ->method('push')
-//            ->with($this->command);
-//
-//        $this->commandExceptionHandler->handle($this->command, new \Exception('test'));
+        $queue = new QueueStorage();
+        $command = new Move($this->createMock(MovableInterface::class));
+        $asserted = new RepeatCommand($command);
+        $queue::push($command);
+        $this->commandExceptionHandler->handle($command, new RuntimeException());
+        $this->assertEquals($asserted, $queue->take());
     }
 }
 

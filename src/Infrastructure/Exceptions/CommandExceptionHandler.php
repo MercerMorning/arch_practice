@@ -5,14 +5,16 @@ namespace App\Infrastructure\Exceptions;
 use App\Application\Commands\CommandInterface;
 use App\Application\Commands\Move;
 use \Exception;
+use RuntimeException;
 use Throwable;
 
 class CommandExceptionHandler implements ExceptionHandlerInterface
 {
     const EXCEPTION_HANDLERS = [
         Move::class => [
-            Exception::class => ExceptionHandler::class
-        ]
+            Exception::class => ExceptionHandler::class,
+            RuntimeException::class => RuntimeExceptionHandler::class
+        ],
     ];
 
     public function handle(CommandInterface $command, Throwable $exception)
