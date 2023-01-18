@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Infrastructure\Exception;
 
+use App\Application\Commands\LoggerCommand;
 use App\Application\Commands\Move;
 use App\Application\Commands\RepeatCommand;
 use App\Application\Commands\SecondRepeatCommand;
@@ -40,21 +41,36 @@ class CommandExceptionHandlerTest extends TestCase
         $this->assertEquals($asserted, $queue->take());
     }
 
-//    public function testExecuteWithMoveRepeatRuntimeException(): void
-//    {
-//        $queue = new QueueStorage();
-//        $command = new Move($this->createMock(MovableInterface::class));
-//        $asserted = new RepeatCommand($command);
-//        $queue::push($command);
-//        $this->commandExceptionHandler->handle($command, new RuntimeException());
-//        $this->assertEquals($asserted, $queue->take());
-//    }
+    public function testExecuteWithMoveRepeatRuntimeException(): void
+    {
+        $queue = new QueueStorage();
+        $command = new Move($this->createMock(MovableInterface::class));
+        $asserted = new LoggerCommand();
+        $this->commandExceptionHandler->handle($command, new RuntimeException());
+        $command = $queue->take();
+        $this->commandExceptionHandler->handle($command, new RuntimeException());
+        $this->assertEquals($asserted, $queue->take());
+    }
 
     public function testExecuteWithMoveRepeatErrorRuntimeException(): void
     {
         $queue = new QueueStorage();
         $command = new Move($this->createMock(MovableInterface::class));
         $asserted = new SecondRepeatCommand(new RepeatCommand($command));
+        $this->commandExceptionHandler->handle($command, new ErrorException());
+        $command = $queue->take();
+        $this->commandExceptionHandler->handle($command, new ErrorException());
+        $command = $queue->take();
+        $this->assertEquals($asserted, $command);
+    }
+
+    public function testExecuteWithMoveSecondRepeatErrorRuntimeException(): void
+    {
+        $queue = new QueueStorage();
+        $command = new Move($this->createMock(MovableInterface::class));
+        $asserted = new LoggerCommand();
+        $this->commandExceptionHandler->handle($command, new ErrorException());
+        $command = $queue->take();
         $this->commandExceptionHandler->handle($command, new ErrorException());
         $command = $queue->take();
         $this->commandExceptionHandler->handle($command, new ErrorException());

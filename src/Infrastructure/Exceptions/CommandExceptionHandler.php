@@ -20,13 +20,12 @@ class CommandExceptionHandler implements ExceptionHandlerInterface
             ErrorException::class => ErrorExceptionHandler::class
         ],
         RepeatCommand::class => [
-            RuntimeException::class => LogExceptionHandler::class,
+            RuntimeException::class => ExceptionHandlerWithLogging::class,
             ErrorException::class => RepeatErrorExceptionHandler::class
         ],
         SecondRepeatCommand::class => [
-            ErrorException::class => LogExceptionHandler::class,
+            ErrorException::class => ExceptionHandlerWithLogging::class,
         ],
-
     ];
 
     public function handle(CommandInterface $command, Throwable $exception)
