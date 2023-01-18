@@ -1,25 +1,29 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Infrastructure\Exceptions;
 
 use App\Application\Commands\CommandInterface;
-use App\Application\Commands\RepeatCommand;
-use App\Infrastructure\Queue\QueueStorageInterface;
+use App\Application\Commands\Move;
+use \Exception;
 use Throwable;
 
 class CommandExceptionHandler implements ExceptionHandlerInterface
 {
-    private QueueStorageInterface $queueStorage;
+    const EXCEPTION_HANDLERS = [
+        Move::class => [
+            Exception::class => ExceptionHandler::class
+        ]
+    ];
 
-    public function __construct(QueueStorageInterface $queueStorage)
+    public function handle(CommandInterface $command, Throwable $exception)
     {
-        $this->queueStorage = $queueStorage;
+        $handler = $this->getExceptionHandler($command::class, $exception::class);
+        return $handler->handle($command, $exception);
     }
 
-    public function handle(CommandInterface $command, Throwable $exception): void
+    private function getExceptionHandler(string $commandType, string $exceptionClass): ExceptionHandlerInterface
     {
-        $this->queueStorage::push(new RepeatCommand($command));
+        $handlerClass = self::EXCEPTION_HANDLERS[$commandType][$exceptionClass];
+        return new $handlerClass();
     }
 }
