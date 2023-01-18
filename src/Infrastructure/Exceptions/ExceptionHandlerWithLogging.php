@@ -4,15 +4,14 @@ namespace App\Infrastructure\Exceptions;
 
 use App\Application\Commands\CommandInterface;
 use App\Application\Commands\LoggerCommand;
-use App\Application\Commands\RepeatCommand;
-use App\Application\Commands\SecondRepeatCommand;
 use App\Infrastructure\Queue\QueueStorage;
+use Monolog\Level;
 use Throwable;
 
 class ExceptionHandlerWithLogging implements ExceptionHandlerInterface
 {
     public function handle(CommandInterface $command, Throwable $exception)
     {
-        QueueStorage::push(new LoggerCommand());
+        QueueStorage::push(new LoggerCommand(Level::Warning, $exception));
     }
 }

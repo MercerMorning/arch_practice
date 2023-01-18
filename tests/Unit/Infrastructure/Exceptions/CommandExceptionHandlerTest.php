@@ -14,6 +14,7 @@ use App\Infrastructure\Exceptions\ExceptionHandler;
 use App\Infrastructure\Queue\QueueStorage;
 use ErrorException;
 use Exception;
+use Monolog\Level;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -45,7 +46,7 @@ class CommandExceptionHandlerTest extends TestCase
     {
         $queue = new QueueStorage();
         $command = new Move($this->createMock(MovableInterface::class));
-        $asserted = new LoggerCommand();
+        $asserted = new LoggerCommand(Level::Warning, new RuntimeException());
         $this->commandExceptionHandler->handle($command, new RuntimeException());
         $command = $queue->take();
         $this->commandExceptionHandler->handle($command, new RuntimeException());
@@ -68,7 +69,7 @@ class CommandExceptionHandlerTest extends TestCase
     {
         $queue = new QueueStorage();
         $command = new Move($this->createMock(MovableInterface::class));
-        $asserted = new LoggerCommand();
+        $asserted = new LoggerCommand(Level::Warning, new ErrorException());
         $this->commandExceptionHandler->handle($command, new ErrorException());
         $command = $queue->take();
         $this->commandExceptionHandler->handle($command, new ErrorException());
