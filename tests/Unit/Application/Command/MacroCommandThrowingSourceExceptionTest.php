@@ -3,9 +3,12 @@
 namespace Tests\Unit\Application\Command;
 
 use App\Application\Commands\CommandInterface;
-use App\Application\Commands\MacroCommand;
 use App\Application\Commands\MacroCommandThrowingSourceException;
-use App\Infrastructure\Exceptions\CommandException;
+use App\Application\Commands\Move;
+use App\Domain\Coordinate;
+use App\Domain\MovableInterface;
+use App\Domain\MovableSnapshot;
+use App\Domain\SnapshottingMovableInterface;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

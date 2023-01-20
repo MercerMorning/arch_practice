@@ -23,4 +23,14 @@ class BurnFuelCommand implements CommandInterface
             CoordinatesSummator::makeSum($this->object->getPosition(), $this->object->getVelocity())
         );
     }
+
+    public function makeBackup()
+    {
+        // TODO: Implement makeBackup() method.
+    }
+
+    public function undo()
+    {
+        // TODO: Implement undo() method.
+    }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Application\Commands;
 
-use App\Infrastructure\Exceptions\CommandException;
 use Throwable;
 
-class MacroCommand implements CommandInterface
+class MacroCommandWithTransaction implements CommandInterface
 {
     /* @var $commands CommandInterface[] */
     private array $commands;
@@ -21,12 +20,13 @@ class MacroCommand implements CommandInterface
 
     public function execute()
     {
-        try {
-            foreach ($this->commands as $command) {
+        foreach ($this->commands as $command) {
+            try {
+                $command->makeBackup();
                 $command->execute();
+            } catch (Throwable $exception) {
+                $command->undo();
             }
-        } catch (Throwable $exception) {
-            throw new CommandException();
         }
     }
 

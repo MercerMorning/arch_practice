@@ -29,4 +29,14 @@ class BurnFuel implements CommandInterface
 
         $this->fuelBurnable->setLevel($level);
     }
+
+    public function makeBackup()
+    {
+        // TODO: Implement makeBackup() method.
+    }
+
+    public function undo()
+    {
+        // TODO: Implement undo() method.
+    }
 }

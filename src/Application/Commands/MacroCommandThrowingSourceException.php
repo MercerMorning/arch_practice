@@ -23,10 +23,26 @@ class MacroCommandThrowingSourceException implements CommandInterface
     {
         try {
             foreach ($this->commands as $command) {
-                $command->execute();
+                try {
+                    $command->makeBackup();
+                    $command->execute();
+                } catch (Throwable $exception) {
+                    $command->undo();
+                    throw $exception;
+                }
             }
         } catch (Throwable $exception) {
             throw $exception;
         }
+    }
+
+    public function makeBackup()
+    {
+        // TODO: Implement makeBackup() method.
+    }
+
+    public function undo()
+    {
+        // TODO: Implement undo() method.
     }
 }

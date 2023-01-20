@@ -26,4 +26,14 @@ class ChangeVelocity implements CommandInterface
             VelocityChanger::makeChange($this->object->getVelocity(), $this->velocityCorrection)
         );
     }
+
+    public function makeBackup()
+    {
+        // TODO: Implement makeBackup() method.
+    }
+
+    public function undo()
+    {
+        // TODO: Implement undo() method.
+    }
 }
