@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\Commands;
 
 use App\Application\Helpers\CoordinatesSummator;
@@ -10,7 +12,7 @@ class BurnFuelCommand implements CommandInterface
     private MovableInterface $object;
 
     /**
-     * @param $object
+     * @param MovableInterface $object
      */
     public function __construct(MovableInterface $object)
     {
@@ -22,15 +24,5 @@ class BurnFuelCommand implements CommandInterface
         $this->object->setPosition(
             CoordinatesSummator::makeSum($this->object->getPosition(), $this->object->getVelocity())
         );
-    }
-
-    public function makeBackup()
-    {
-        // TODO: Implement makeBackup() method.
-    }
-
-    public function undo()
-    {
-        // TODO: Implement undo() method.
     }
 }

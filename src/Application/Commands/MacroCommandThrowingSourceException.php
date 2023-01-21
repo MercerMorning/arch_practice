@@ -2,12 +2,11 @@
 
 namespace App\Application\Commands;
 
-use App\Infrastructure\Exceptions\CommandException;
 use Throwable;
 
 class MacroCommandThrowingSourceException implements CommandInterface
 {
-    /* @var $commands CommandInterface[] */
+    /* @var $commands array */
     private array $commands;
 
     /**
@@ -17,7 +16,6 @@ class MacroCommandThrowingSourceException implements CommandInterface
     {
         $this->commands = $commands;
     }
-
 
     public function execute()
     {
@@ -34,15 +32,5 @@ class MacroCommandThrowingSourceException implements CommandInterface
         } catch (Throwable $exception) {
             throw $exception;
         }
-    }
-
-    public function makeBackup()
-    {
-        // TODO: Implement makeBackup() method.
-    }
-
-    public function undo()
-    {
-        // TODO: Implement undo() method.
     }
 }

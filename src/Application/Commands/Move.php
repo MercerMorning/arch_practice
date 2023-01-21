@@ -6,7 +6,7 @@ use App\Application\Helpers\CoordinatesSummator;
 use App\Domain\MovableInterface;
 use App\Domain\MovableSnapshot;
 
-class Move implements CommandInterface
+class Move implements CommandInterface, CommandTransactionInterface
 {
     private MovableInterface $object;
     private MovableSnapshot $backup;

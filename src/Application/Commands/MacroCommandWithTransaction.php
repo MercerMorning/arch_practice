@@ -17,9 +17,9 @@ class MacroCommandWithTransaction implements CommandInterface
         $this->commands = $commands;
     }
 
-
     public function execute()
     {
+        /** @var CommandInterface|CommandTransactionInterface $command */
         foreach ($this->commands as $command) {
             try {
                 $command->makeBackup();
@@ -28,15 +28,5 @@ class MacroCommandWithTransaction implements CommandInterface
                 $command->undo();
             }
         }
-    }
-
-    public function makeBackup()
-    {
-        // TODO: Implement makeBackup() method.
-    }
-
-    public function undo()
-    {
-        // TODO: Implement undo() method.
     }
 }

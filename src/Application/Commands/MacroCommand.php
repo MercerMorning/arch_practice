@@ -18,7 +18,6 @@ class MacroCommand implements CommandInterface
         $this->commands = $commands;
     }
 
-
     public function execute()
     {
         try {
@@ -28,15 +27,5 @@ class MacroCommand implements CommandInterface
         } catch (Throwable $exception) {
             throw new CommandException();
         }
-    }
-
-    public function makeBackup()
-    {
-        // TODO: Implement makeBackup() method.
-    }
-
-    public function undo()
-    {
-        // TODO: Implement undo() method.
     }
 }

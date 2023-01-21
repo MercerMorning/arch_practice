@@ -23,14 +23,4 @@ class Rotate implements CommandInterface
             Rotator::makeRotate($this->object->getAngular(), $this->object->getAngularVelocity())
         );
     }
-
-    public function makeBackup()
-    {
-        // TODO: Implement makeBackup() method.
-    }
-
-    public function undo()
-    {
-        // TODO: Implement undo() method.
-    }
 }
