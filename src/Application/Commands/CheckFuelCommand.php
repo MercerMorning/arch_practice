@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Application\Commands;
 
 use App\Application\Exceptions\BurnFuelException;
+use App\Application\Exceptions\CheckFuelException;
 use App\Domain\FuelBurnableInterface;
 use Exception;
 
-class BurnFuel implements CommandInterface
+/**
+ * Проверяет уровень топлива
+ */
+class CheckFuelCommand implements CommandInterface
 {
     private FuelBurnableInterface $fuelBurnable;
 
@@ -22,12 +26,10 @@ class BurnFuel implements CommandInterface
      */
     public function execute(): void
     {
-        $level = $this->fuelBurnable->getLevel() - $this->fuelBurnable->getVelocity();
+        $level = $this->fuelBurnable->getLevel();
 
-        if ($level < 0) {
-            throw new BurnFuelException("The object has run out of fuel");
+        if ($level <= 0) {
+            throw new CheckFuelException("The object has run out of fuel");
         }
-
-        $this->fuelBurnable->setLevel($level);
     }
 }

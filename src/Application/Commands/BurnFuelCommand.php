@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace App\Application\Commands;
 
-use App\Application\Helpers\CoordinatesSummator;
-use App\Domain\MovableInterface;
+use App\Application\Exceptions\BurnFuelException;
+use App\Domain\FuelBurnableInterface;
 
 class BurnFuelCommand implements CommandInterface
 {
-    private MovableInterface $object;
+    private FuelBurnableInterface $fuelBurnable;
 
-    /**
-     * @param MovableInterface $object
-     */
-    public function __construct(MovableInterface $object)
+    public function __construct(FuelBurnableInterface $fuelBurnable)
     {
-        $this->object = $object;
+        $this->fuelBurnable = $fuelBurnable;
     }
 
     public function execute()
     {
-        $this->object->setPosition(
-            CoordinatesSummator::makeSum($this->object->getPosition(), $this->object->getVelocity())
-        );
+        $level = $this->fuelBurnable->getLevel() - $this->fuelBurnable->getVelocity();
+
+        if ($level < 0) {
+            throw new BurnFuelException("The object has run out of fuel");
+        }
+
+        $this->fuelBurnable->setLevel($level);
     }
 }
