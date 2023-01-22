@@ -51,32 +51,34 @@ class IoC
          */
         $methods = $ref->getMethods();
         foreach ($methods as $method) {
-            $methodReturnType = $method->getReturnType()?->getName();
-            $methodParametersArray = [];
-            $methodArgumentsArray = [];
-            $methodParameters = $method->getParameters();
-            if ($methodParameters) {
-                /**
-                 * @var $methods ReflectionParameter[]
-                 */
-                foreach ($methodParameters as $methodParameter) {
-                    $methodParametersArray[] = "\\" . $methodParameter->getType() . ' $' . $methodParameter->getName();
-                    $methodArgumentsArray[] = '$' . $methodParameter->getName();
+
+            $methodArguments = [];
+            $containerArguments = [];
+            if ($method->getParameters()) {
+                foreach ($method->getParameters() as $methodParameter) {
+                    $methodArguments[] = "\\" . $methodParameter->getType() . ' $' . $methodParameter->getName();
+                    $containerArguments[] = '$' . $methodParameter->getName();
                 }
             }
-            $methodParameters = implode(', ', $methodParametersArray);
+            $methodArguments = implode(', ', $methodArguments);
+            $containerArguments = implode(',', $containerArguments);
+
             $methodName = $method->getName();
-            $methodBody = PHP_EOL . "public function {$methodName} ({$methodParameters})";
+            $methodReturnType = $method->getReturnType()?->getName();
+
+
+            $methodBody = PHP_EOL . "public function {$methodName} ({$methodArguments})";
             if ($methodReturnType) {
                 $methodBody .= ": \\{$methodReturnType}";
             }
-            $methodArguments = implode(',', $methodArgumentsArray);
+
 
             $methodBody .= "{ return \$this->container->resolve('{$interfaceName}.{$methodName}', \$this->object";
             if ($methodArguments) {
-                $methodBody .= ',' . $methodArguments;
+                $methodBody .= ',' . $containerArguments;
             }
             $methodBody .= "); }";
+
             $body .= $methodBody . PHP_EOL;
         }
         $class .= PHP_EOL . '{' . $body . '}';
