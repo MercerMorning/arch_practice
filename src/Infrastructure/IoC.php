@@ -14,20 +14,20 @@ class IoC
     /**
      * @var $binded Closure[]
      */
-    protected $binded = [];
+    public static $binded = [];
 
     public function __construct()
     {
-        $this->binded['IoC.Register'] = function (array $args) {
-            $this->binded[$args[0]] = $args[1];
+        self::$binded['IoC.Register'] = function (array $args) {
+            self::$binded[$args[0]] = $args[1];
         };
     }
 
 
     public function resolve(string $key, ...$args)
     {
-        if (isset($this->binded[$key])) {
-            return $this->binded[$key]($args);
+        if (isset(self::$binded[$key])) {
+            return self::$binded[$key]($args);
         }
     }
 
@@ -42,7 +42,8 @@ class IoC
         $body .=
             'private \\' . IoC::class . ' $container;' . PHP_EOL .
             'private object $object;' . PHP_EOL .
-            'public function __construct() {
+            'public function __construct(object $object) {
+                $this->object = $object;
                 $this->container = new ' . IoC::class . '();
             }';
         /**
