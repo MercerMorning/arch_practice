@@ -9,7 +9,7 @@ use ReflectionParameter;
 
 class IoC
 {
-    const GENERATED_PATH = '/app/generated/';
+    const GENERATED_PATH = '/Generated/';
 
     /**
      * @var $binded Closure[]
@@ -52,6 +52,7 @@ class IoC
         foreach ($methods as $method) {
             $methodReturnType = $method->getReturnType()?->getName();
             $methodParametersArray = [];
+            $methodArgumentsArray = [];
             $methodParameters = $method->getParameters();
             if ($methodParameters) {
                 /**
@@ -59,6 +60,7 @@ class IoC
                  */
                 foreach ($methodParameters as $methodParameter) {
                     $methodParametersArray[] = "\\" . $methodParameter->getType() . ' $' . $methodParameter->getName();
+                    $methodArgumentsArray[] = '$' . $methodParameter->getName();
                 }
             }
             $methodParameters = implode(', ', $methodParametersArray);
@@ -67,11 +69,17 @@ class IoC
             if ($methodReturnType) {
                 $methodBody .= ": \\{$methodReturnType}";
             }
-            $methodBody .= "{ return \$this->container->resolve('{$interfaceName}.{$methodName}', \$this->object); }";
+            $methodArguments = implode(',', $methodArgumentsArray);
+
+            $methodBody .= "{ return \$this->container->resolve('{$interfaceName}.{$methodName}', \$this->object";
+            if ($methodArguments) {
+                $methodBody .= ',' . $methodArguments;
+            }
+            $methodBody .= "); }";
             $body .= $methodBody . PHP_EOL;
         }
         $class .= PHP_EOL . '{' . $body . '}';
-        $path = self::GENERATED_PATH . $className . '.php';
+        $path = __DIR__ . self::GENERATED_PATH . $className . '.php';
         file_put_contents($path, $class);
         require_once $path;
     }
