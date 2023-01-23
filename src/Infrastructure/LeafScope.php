@@ -5,7 +5,6 @@ namespace App\Infrastructure;
 class LeafScope implements ScopeInterface
 {
     private \Closure $strategy;
-
     /**
      * @param \Closure $strategy
      */
@@ -16,6 +15,6 @@ class LeafScope implements ScopeInterface
 
     public function resolve(string $key, array $arguments)
     {
-        return $this->strategy($key, $arguments);
+        return ($this->strategy)($key, $arguments);
     }
 }
