@@ -26,14 +26,4 @@ class AddCommand implements CommandInterface
     {
         QueueStorage::push($this->command);
     }
-
-    public function makeBackup()
-    {
-        // TODO: Implement makeBackup() method.
-    }
-
-    public function undo()
-    {
-        // TODO: Implement undo() method.
-    }
 }

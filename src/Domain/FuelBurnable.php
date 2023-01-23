@@ -24,7 +24,7 @@ class FuelBurnable implements FuelBurnableInterface
         $this->level = $level;
     }
 
-    public function getVelocity(): int
+    public function getConsumption(): int
     {
         return $this->velocity;
     }

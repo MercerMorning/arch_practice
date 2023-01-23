@@ -30,7 +30,7 @@ class BurnFuelTest extends TestCase
             ->method('getLevel')
             ->willReturn($input['level']);
         $this->fuelBurnable->expects($this->once())
-            ->method('getVelocity')
+            ->method('getConsumption')
             ->willReturn($input['velocity']);
         $this->fuelBurnable->expects($this->once())
             ->method('setLevel')
@@ -72,7 +72,7 @@ class BurnFuelTest extends TestCase
             ->method('getLevel')
             ->willReturn($input['level']);
         $this->fuelBurnable->expects($this->once())
-            ->method('getVelocity')
+            ->method('getConsumption')
             ->willReturn($input['velocity']);
         $this->expectException(BurnFuelException::class);
         $this->burnFuel->execute();
