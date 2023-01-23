@@ -21,7 +21,7 @@ class Scope implements ScopeInterface
     }
 
 
-    public function resolve(string $key, array $arguments)
+    public function resolve(string $key, ...$arguments)
     {
         if (isset($this->dependencies[$key])) {
             return $this->dependencies[$key]($arguments);
