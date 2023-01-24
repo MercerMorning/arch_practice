@@ -21,16 +21,19 @@ class InitScopeBasedIoCImplementation
 //                , $arguments[0]);
 //        };
 
-        $dependencies['Scopes.Current'] = function () {
-            $scope = ScopeBasedResolveDependencyStrategy::currentScope();
-            if ($scope !== null) {
-                return $scope;
-            } else {
-                return ScopeBasedResolveDependencyStrategy::$defaultScope;
-            }
+        $defaultScope = new Scope([], new RootScope());
+
+        $dependencies['Scopes.Current'] = function () use ($defaultScope) {
+            return $defaultScope;
+//            $scope = ScopeBasedResolveDependencyStrategy::currentScope();
+//            if ($scope !== null) {
+//                return $scope;
+//            } else {
+//                return ScopeBasedResolveDependencyStrategy::$defaultScope;
+//            }
         };
-        $dependencies['IoC.Register'] = function (...$arguments) {
-            return new RegisterIoCDependencyCommand($arguments[0], $arguments[1]);
+        $dependencies['IoC.Register'] = function (array $arguments) use ($defaultScope) {
+            return new RegisterIoCDependencyCommand($defaultScope, $arguments[0], $arguments[1]);
         };
         $scope = new Scope($dependencies, new LeafScope(InversionOfControlContainer::resolve('IoC.Default')));
 
