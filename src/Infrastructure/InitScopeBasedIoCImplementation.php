@@ -35,7 +35,6 @@ class InitScopeBasedIoCImplementation
             return new RegisterIoCDependencyCommand($scope, $arguments[0], $arguments[1]);
         };
 
-
         InversionOfControlContainer::resolve('IoC.SetupStrategy', function () use ($scope) {
             return $scope;
         })->execute();
