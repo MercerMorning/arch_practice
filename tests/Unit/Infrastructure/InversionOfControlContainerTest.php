@@ -20,8 +20,9 @@ class InversionOfControlContainerTest extends TestCase
 
         $scope = new Scope([], new LeafScope(function () { }));
 
-        $container->resolve("Scopes.New", '1', $scope);
-        var_dump($container->resolve("Scopes.Storage"));
+        $container->resolve("Scopes.New", '1', $scope)->execute();
+        $container->resolve("Scopes.Current.Set", '1', $scope)->execute();
+        var_dump(array_keys($container->resolve("Scopes.Storage")));
 
 exit();
         $container->resolve("IoC.Register", 'testQuery', function () {
