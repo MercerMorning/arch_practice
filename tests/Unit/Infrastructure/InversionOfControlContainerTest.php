@@ -5,8 +5,6 @@ namespace Tests\Unit\Infrastructure;
 
 use App\Infrastructure\InitScopeBasedIoCImplementation;
 use App\Infrastructure\InversionOfControlContainer;
-use App\Infrastructure\LeafScope;
-use App\Infrastructure\Scope;
 use App\Infrastructure\ScopeBasedResolveDependencyStrategy;
 use PHPUnit\Framework\TestCase;
 
@@ -19,29 +17,20 @@ class InversionOfControlContainerTest extends TestCase
         $command = new InitScopeBasedIoCImplementation();
         $command->execute();
 
-//        $scope = clone ScopeBasedResolveDependencyStrategy::$root;
+        $scope = clone ScopeBasedResolveDependencyStrategy::$root;
 
-        $container->resolve("IoC.Register", 'test', function () {
+        $container->resolve("IoC.Register", 'scopeTest', function () {
             return 'test';
         })->execute();
-        $result = $container->resolve("IoC.Register");
-        var_dump($result);
-        exit();
-
-//        $container->resolve("Scopes.New", '1', $scope)->execute();
-//        $container->resolve("Scopes.Current.Set", '1')->execute();
-//        var_dump(array_keys($container->resolve("Scopes.Storage")));
-
-//exit();
-//        $container->resolve("IoC.Register", 'testQuery', function () {
-//            return 'test';
-//        })->execute();
-
-//        var_dump(array_keys($container->resolve('Scopes.Current')->dependencies));
-//        exit();
-//        var_dump($container->resolve("testQuery"));
-////        var_dump($scope);
-//        exit();
+        $this->assertSame('test', $container->resolve("scopeTest"));
+        $container->resolve("Scopes.New", '1', $scope)->execute();
+        $container->resolve("Scopes.Current.Set", '1')->execute();
+        $container->resolve("IoC.Register", 'scopeTest', function () {
+            return 'test2';
+        })->execute();
+        $this->assertSame('test2', $container->resolve("scopeTest"));
+        $container->resolve("Scopes.Current.Set", 'default')->execute();
+        $this->assertSame('test', $container->resolve("scopeTest"));
     }
 
 //    public function testResolve()
