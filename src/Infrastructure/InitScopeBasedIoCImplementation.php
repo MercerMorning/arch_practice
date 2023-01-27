@@ -13,13 +13,12 @@ class InitScopeBasedIoCImplementation
 
         $dependencies = [];
 
-        $dependencies['Scopes.Storage'] = function (array $arguments) {
-            return [];
+        $storage = [];
+        $dependencies['Scopes.Storage'] = function () use ($storage){
+            return $storage;
         };
-        $dependencies['Scopes.New'] = function (array $arguments) {
-            new Scope(
-                InversionOfControlContainer::resolve('Scopes.Storage')
-                , $arguments[0]);
+        $dependencies['Scopes.New'] = function (array $arguments) use (&$storage){
+            $storage[$arguments[0]] = $arguments[1];
         };
 
         $dependencies['Scopes.Current'] = function () {
@@ -30,15 +29,6 @@ class InitScopeBasedIoCImplementation
                 return ScopeBasedResolveDependencyStrategy::$defaultScope;
             }
         };
-
-//        $dependencies['Scopes.Current.Set'] = function () {
-//            $scope = ScopeBasedResolveDependencyStrategy::currentScope();
-//            if ($scope !== null) {
-//                return $scope;
-//            } else {
-//                return ScopeBasedResolveDependencyStrategy::$defaultScope;
-//            }
-//        };
 
         $dependencies['IoC.Register'] = function (array $arguments = []) {;
             return new RegisterIoCDependencyCommand($arguments[0], $arguments[1]);
