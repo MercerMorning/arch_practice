@@ -40,7 +40,7 @@ class InitScopeBasedIoCImplementation
 //            }
 //        };
 
-        $dependencies['IoC.Register'] = function (...$arguments) {
+        $dependencies['IoC.Register'] = function (array $arguments = []) {;
             return new RegisterIoCDependencyCommand($arguments[0], $arguments[1]);
         };
 

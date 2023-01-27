@@ -25,7 +25,7 @@ class ScopeBasedResolveDependencyStrategy
 //        return new RootScope();
     }
 
-    public static function resolve(string $key, array $arguments)
+    public static function resolve(string $key, array $arguments = [])
     {
         if ($key == "Scopes.Root"){
             return new RootScope();
@@ -35,7 +35,6 @@ class ScopeBasedResolveDependencyStrategy
             if ($scope == null) {
                 $scope = new DefaultScope();
             }
-
             return $scope->resolve($key, $arguments);
         }
     }

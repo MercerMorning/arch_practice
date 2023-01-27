@@ -17,15 +17,13 @@ class InversionOfControlContainerTest extends TestCase
         $command = new InitScopeBasedIoCImplementation();
         $command->execute();
 
+        $container->resolve("IoC.Register", 'testQuery', function () {
+            return 'test';
+        });
 
-        $scope = $container::resolve('Scopes.Storagee', '');
-
-//        $registerCommand = $scope->resolve("IoC.Register", 'testQuery', function () {
-//            return 'test';
-//        });
-
-//        $registerCommand->execute();
-        var_dump($scope);
+        var_dump($container);
+        var_dump($container->resolve("testQuery"));
+////        var_dump($scope);
         exit();
     }
 
