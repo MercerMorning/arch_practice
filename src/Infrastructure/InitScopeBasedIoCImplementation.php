@@ -7,7 +7,7 @@ class InitScopeBasedIoCImplementation
     public function execute()
     {
         // Защита от повторного вызова
-        if (ScopeBasedResolveDependencyStrategy::$root !== null) {
+        if (isset(ScopeBasedResolveDependencyStrategy::$root)) {
             return;
         }
 
@@ -48,10 +48,10 @@ class InitScopeBasedIoCImplementation
 
         ScopeBasedResolveDependencyStrategy::$root = $scope;
 
-        InversionOfControlContainer::resolve('IoC.SetupStrategy', function () use ($scope) {
-            return $scope;
-        })->execute();
-
+        InversionOfControlContainer::resolve(
+            'IoC.SetupStrategy',
+            ScopeBasedResolveDependencyStrategy::strategy()
+        )->execute();
         //set scope in current
     }
 }
