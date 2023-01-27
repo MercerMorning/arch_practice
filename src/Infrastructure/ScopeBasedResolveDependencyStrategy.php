@@ -22,10 +22,6 @@ class ScopeBasedResolveDependencyStrategy
             self::$root = new RootScope();
         }
         return self::$root;
-//       if ($scope = InversionOfControlContainer::resolve('Scopes.Current')) {
-//           return $scope;
-//       }
-//        return new RootScope();
     }
 
     public static function resolve(string $key, array $arguments = [])

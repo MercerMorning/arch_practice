@@ -12,7 +12,6 @@ class InversionOfControlContainerTest extends TestCase
 {
     public function testChangingScopes()
     {
-
         $container = new InversionOfControlContainer();
         $command = new InitScopeBasedIoCImplementation();
         $command->execute();
@@ -22,6 +21,7 @@ class InversionOfControlContainerTest extends TestCase
         $container->resolve("IoC.Register", 'scopeTest', function () {
             return 'test';
         })->execute();
+
         $this->assertSame('test', $container->resolve("scopeTest"));
         $container->resolve("Scopes.New", '1', $scope)->execute();
         $container->resolve("Scopes.Current.Set", '1')->execute();
@@ -32,23 +32,4 @@ class InversionOfControlContainerTest extends TestCase
         $container->resolve("Scopes.Current.Set", 'default')->execute();
         $this->assertSame('test', $container->resolve("scopeTest"));
     }
-
-//    public function testResolve()
-//    {
-//
-//        $container = new InversionOfControlContainer();
-////        $container::resolve( 'IoC.Default');
-//        $command = new InitScopeBasedIoCImplementation();
-//        $command->execute();
-//
-//        $scope = $container::resolve('');
-//
-//        $registerCommand = $scope->resolve("IoC.Register", 'testQuery', function () {
-//            return 'test';
-//        });
-//
-//        $registerCommand->execute();
-//        var_dump($scope->resolve('testQuery'));
-//        exit();
-//    }
 }
