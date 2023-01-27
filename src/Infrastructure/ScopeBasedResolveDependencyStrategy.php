@@ -6,7 +6,7 @@ class ScopeBasedResolveDependencyStrategy
 {
     public static ScopeInterface $root;
 
-    public static $defaultScope;
+    public static ScopeInterface $defaultScope;
 
     public function __construct()
     {
@@ -15,6 +15,9 @@ class ScopeBasedResolveDependencyStrategy
 
     public static function currentScope()
     {
+        if (isset(self::$defaultScope)) {
+            return self::$defaultScope;
+        }
         if (!self::$root) {
             self::$root = new RootScope();
         }
@@ -30,6 +33,7 @@ class ScopeBasedResolveDependencyStrategy
         if ($key == "Scopes.Root"){
             return new RootScope();
         } else {
+
             $scope = self::currentScope();
 
             if ($scope == null) {
