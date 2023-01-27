@@ -13,18 +13,37 @@ class InversionOfControlContainerTest extends TestCase
     {
 
         $container = new InversionOfControlContainer();
-        $container::resolve( 'IoC.Default');
+//        $container::resolve( 'IoC.Default');
         $command = new InitScopeBasedIoCImplementation();
         $command->execute();
 
         $scope = $container::resolve('');
 
-        $registerCommand = $scope->resolve("IoC.Register", 'testQuery', function () {
-            return 'test';
-        });
+//        $registerCommand = $scope->resolve("IoC.Register", 'testQuery', function () {
+//            return 'test';
+//        });
 
-        $registerCommand->execute();
-        var_dump($scope->resolve('testQuery'));
+//        $registerCommand->execute();
+        var_dump($scope);
         exit();
     }
+
+//    public function testResolve()
+//    {
+//
+//        $container = new InversionOfControlContainer();
+////        $container::resolve( 'IoC.Default');
+//        $command = new InitScopeBasedIoCImplementation();
+//        $command->execute();
+//
+//        $scope = $container::resolve('');
+//
+//        $registerCommand = $scope->resolve("IoC.Register", 'testQuery', function () {
+//            return 'test';
+//        });
+//
+//        $registerCommand->execute();
+//        var_dump($scope->resolve('testQuery'));
+//        exit();
+//    }
 }

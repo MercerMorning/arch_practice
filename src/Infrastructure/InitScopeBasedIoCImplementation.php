@@ -6,23 +6,32 @@ class InitScopeBasedIoCImplementation
 {
     public function execute()
     {
-//        if (ScopeBasedResolveDependencyStrategy::$root !== null) {
-//            return;
-//        }
+        // Защита от повторного вызова
+        if (ScopeBasedResolveDependencyStrategy::$root !== null) {
+            return;
+        }
 
         $dependencies = [];
 
-//        $dependencies['Scopes.Storage'] = function (array $arguments) {
-//            return [];
-//        };
-//        $dependencies['Scopes.New'] = function (array $arguments) {
-//            new Scope(
-//                InversionOfControlContainer::resolve('Scopes.Strategy')
-//                , $arguments[0]);
-//        };
+        $dependencies['Scopes.Storage'] = function (array $arguments) {
+            return [];
+        };
+        $dependencies['Scopes.New'] = function (array $arguments) {
+            new Scope(
+                InversionOfControlContainer::resolve('Scopes.Storage')
+                , $arguments[0]);
+        };
 
-//        $dependencies['Scopes.Current'] = function () use ($defaultScope) {
-//            return $defaultScope;
+        $dependencies['Scopes.Current'] = function () {
+            $scope = ScopeBasedResolveDependencyStrategy::currentScope();
+            if ($scope !== null) {
+                return $scope;
+            } else {
+                return ScopeBasedResolveDependencyStrategy::$defaultScope;
+            }
+        };
+
+//        $dependencies['Scopes.Current.Set'] = function () {
 //            $scope = ScopeBasedResolveDependencyStrategy::currentScope();
 //            if ($scope !== null) {
 //                return $scope;
@@ -30,13 +39,19 @@ class InitScopeBasedIoCImplementation
 //                return ScopeBasedResolveDependencyStrategy::$defaultScope;
 //            }
 //        };
-        $scope = new Scope([], new LeafScope(InversionOfControlContainer::resolve('IoC.Default')));
-        $scope->dependencies['IoC.Register'] = function (array $arguments) use ($scope){
-            return new RegisterIoCDependencyCommand($scope, $arguments[0], $arguments[1]);
+
+        $dependencies['IoC.Register'] = function (...$arguments) {
+            return new RegisterIoCDependencyCommand($arguments[0], $arguments[1]);
         };
+
+        $scope = new Scope($dependencies, new LeafScope(InversionOfControlContainer::resolve('IoC.Default')));
+
+        ScopeBasedResolveDependencyStrategy::$root = $scope;
 
         InversionOfControlContainer::resolve('IoC.SetupStrategy', function () use ($scope) {
             return $scope;
         })->execute();
+
+        //set scope in current
     }
 }

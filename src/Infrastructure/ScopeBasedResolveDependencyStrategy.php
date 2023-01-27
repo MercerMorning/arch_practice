@@ -10,16 +10,19 @@ class ScopeBasedResolveDependencyStrategy
 
     public function __construct()
     {
-        self::$root = new RootScope();
         self::$defaultScope = new RootScope();
     }
 
     public static function currentScope()
     {
-       if ($scope = InversionOfControlContainer::resolve('Scopes.Current')) {
-           return $scope;
-       }
-        return new RootScope();
+        if (!self::$defaultScope) {
+            self::$defaultScope = new RootScope();
+        }
+        return self::$defaultScope;
+//       if ($scope = InversionOfControlContainer::resolve('Scopes.Current')) {
+//           return $scope;
+//       }
+//        return new RootScope();
     }
 
     public function resolve(string $key, array $arguments)
