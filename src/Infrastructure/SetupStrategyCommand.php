@@ -17,6 +17,6 @@ class SetupStrategyCommand
 
     public function execute()
     {
-        $this->container::$strategy = $this->newStrategy;
+        $this->container->strategy = $this->newStrategy;
     }
 }

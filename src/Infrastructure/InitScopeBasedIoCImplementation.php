@@ -7,9 +7,9 @@ class InitScopeBasedIoCImplementation
     public function execute()
     {
         // Защита от повторного вызова
-        if (isset(ScopeBasedResolveDependencyStrategy::$root)) {
-            return;
-        }
+//        if (isset(ScopeBasedResolveDependencyStrategy::$root)) {
+//            return;
+//        }
 
         $dependencies = [];
 
@@ -37,15 +37,15 @@ class InitScopeBasedIoCImplementation
             return new RegisterIoCDependencyCommand($arguments[0], $arguments[1]);
         };
 
-        $scope = new Scope($dependencies, new LeafScope(InversionOfControlContainer::resolve('IoC.Default')));
+        $scope = new Scope($dependencies, new LeafScope(InversionOfControlContainer::getInstance()->resolve('IoC.Default')));
 
         ScopeBasedResolveDependencyStrategy::$root = $scope;
 
-        InversionOfControlContainer::resolve(
+        InversionOfControlContainer::getInstance()->resolve(
             'IoC.SetupStrategy',
             ScopeBasedResolveDependencyStrategy::strategy()
         )->execute();
-        InversionOfControlContainer::resolve("Scopes.New", 'default', $scope)->execute();
+        InversionOfControlContainer::getInstance()->resolve("Scopes.New", 'default', $scope)->execute();
         //set scope in current
     }
 }

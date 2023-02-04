@@ -21,7 +21,7 @@ class RegisterNewScopeCommand
 
     public function execute()
     {
-        $storage = InversionOfControlContainer::resolve('Scopes.Storage');
+        $storage = InversionOfControlContainer::getInstance()->resolve('Scopes.Storage');
 
         ScopeBasedResolveDependencyStrategy::currentScope()->dependencies['Scopes.Storage'] = function () use ($storage){
             $storage[$this->key] = $this->scope;

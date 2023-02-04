@@ -13,7 +13,8 @@ class InversionOfControlContainerTest extends TestCase
     public function testChangingScopes()
     {
         $container = new InversionOfControlContainer();
-        $command = new InitScopeBasedIoCImplementation();
+        InversionOfControlContainer::setInstance($container);
+        $command = new InitScopeBasedIoCImplementation($container);
         $command->execute();
 
         $scope = clone ScopeBasedResolveDependencyStrategy::$root;

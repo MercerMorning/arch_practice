@@ -7,11 +7,12 @@ use InvalidArgumentException;
 
 class InversionOfControlContainer
 {
-    public static Closure $strategy;
+    public Closure $strategy;
+    private static self $instance;
 
     public function __construct()
     {
-        self::$strategy = function ($key, array $arguments) {
+        $this->strategy = function ($key, array $arguments) {
             if ($key == 'IoC.SetupStrategy') {
                 return new SetupStrategyCommand($this, $arguments[0]);
             } elseif ($key == 'IoC.Default') {
@@ -22,9 +23,9 @@ class InversionOfControlContainer
         };
     }
 
-    public static function resolve(string $key, ...$args)
+    public function resolve(string $key, ...$args)
     {
-        $strategy = self::$strategy;
+        $strategy = $this->strategy;
         return $strategy($key, $args);
     }
 
@@ -35,5 +36,13 @@ class InversionOfControlContainer
         };
     }
 
+    public static function getInstance()
+    {
+        return self::$instance;
+    }
 
+    public static function setInstance(self $container)
+    {
+        self::$instance = $container;
+    }
 }
