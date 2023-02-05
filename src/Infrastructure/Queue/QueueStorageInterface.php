@@ -9,4 +9,6 @@ interface QueueStorageInterface
     public function take(): ?CommandInterface;
 
     public static function push(CommandInterface $command): void;
+
+    public static function unshift(CommandInterface $command): void;
 }

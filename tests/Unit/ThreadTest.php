@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Application\Commands\AddForceQueueStopCommandToQueue;
+use App\Application\Commands\AddSoftQueueStopCommandToQueue;
 use App\Application\Commands\CommandInterface;
-use App\Application\Commands\ForceQueueStopCommand;
-use App\Application\Commands\SoftQueueStopCommand;
 use App\Infrastructure\Exceptions\CommandExceptionHandler;
 use App\Infrastructure\Exceptions\ExceptionHandlerInterface;
 use App\Infrastructure\InitScopeBasedIoCImplementation;
@@ -12,6 +12,7 @@ use App\Infrastructure\InversionOfControlContainer;
 use App\Infrastructure\Queue\QueueListener;
 use App\Infrastructure\Queue\QueueStorage;
 use App\Infrastructure\Queue\QueueStorageInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ThreadTest extends TestCase
@@ -40,7 +41,7 @@ class ThreadTest extends TestCase
         })->execute();
 
         $container->resolve("IoC.Register", 'stopThread', function () {
-            return new SoftQueueStopCommand();
+            return new AddSoftQueueStopCommandToQueue();
         })->execute();
 
         /**
@@ -48,18 +49,26 @@ class ThreadTest extends TestCase
          */
         $listener = $container->resolve(QueueListener::class);
 
+        /**
+         * @return MockObject[]
+         */
+        $mocks = [
+            $this->createMock(CommandInterface::class),
+            $this->createMock(CommandInterface::class),
+        ];
+        $mocks[0]->expects(self::once())->method('execute');
+        $mocks[1]->expects(self::once())->method('execute');
         $commands =
             [
-                $this->createMock(CommandInterface::class)->method('execute')->willReturn('1'),
-                $this->createMock(CommandInterface::class)->method('execute')->willReturn('2'),
-                $container->resolve("stopThread"),
-                $this->createMock(CommandInterface::class)->method('execute')->willReturn('3'),
+                $mocks[0],
+                $mocks[1],
             ];
 
         foreach ($commands as $command) {
             QueueStorage::push($command);
         }
 
+        $container->resolve("stopThread")->execute();
 
         $listener->listen();
     }
@@ -88,7 +97,7 @@ class ThreadTest extends TestCase
         })->execute();
 
         $container->resolve("IoC.Register", 'stopThread', function () {
-            return new ForceQueueStopCommand();
+            return new AddForceQueueStopCommandToQueue();
         })->execute();
 
         /**
@@ -96,17 +105,29 @@ class ThreadTest extends TestCase
          */
         $listener = $container->resolve(QueueListener::class);
 
+        /**
+         * @return MockObject[]
+         */
+        $mocks = [
+            $this->createMock(CommandInterface::class),
+            $this->createMock(CommandInterface::class),
+        ];
+        $mocks[0]->expects(self::never())->method('execute');
+        $mocks[1]->expects(self::never())->method('execute');
+
         $commands =
             [
-                $this->createMock(CommandInterface::class)->method('execute')->willReturn('1'),
-                $this->createMock(CommandInterface::class)->method('execute')->willReturn('2'),
-                $container->resolve("stopThread"),
-                $this->createMock(CommandInterface::class)->method('execute')->willReturn('3'),
+                $mocks[0],
+                $mocks[1],
             ];
+
+
 
         foreach ($commands as $command) {
             QueueStorage::push($command);
         }
+
+        $container->resolve("stopThread")->execute();
 
         $listener->listen();
     }

@@ -32,7 +32,6 @@ class MoveCommand extends Command
         $spaceship = new Spaceship(new Coordinate(1, 1), new Coordinate(2, 2));
         $move = new Move($spaceship);
         $move->execute();
-        var_dump($spaceship->getPosition());
         return 1;
     }
 }
