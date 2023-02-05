@@ -18,7 +18,7 @@ class SetCurrentScopeCommand
 
     public function execute()
     {
-        $storage = InversionOfControlContainer::resolve('Scopes.Storage');
+        $storage = InversionOfControlContainer::getInstance()->resolve('Scopes.Storage');
 
         $scope = $storage[$this->key];
         $scope->dependencties['Scopes.Storage'] = function () use ($storage){

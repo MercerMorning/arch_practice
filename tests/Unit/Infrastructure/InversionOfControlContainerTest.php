@@ -14,7 +14,7 @@ class InversionOfControlContainerTest extends TestCase
     {
         $container = new InversionOfControlContainer();
         InversionOfControlContainer::setInstance($container);
-        $command = new InitScopeBasedIoCImplementation($container);
+        $command = new InitScopeBasedIoCImplementation();
         $command->execute();
 
         $scope = clone ScopeBasedResolveDependencyStrategy::$root;
