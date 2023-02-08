@@ -8,12 +8,12 @@ class Route
     {
         $uri = self::processURI();
         if (class_exists($uri['controller'])) {
-            $controller = $uri['controller'];
+            $controller = new ($uri['controller'])();
             $method = $uri['method'];
             $args = $uri['args'];
             //Now, the magic
-            $args ? $controller::{$method}(...$args) :
-                $controller::{$method}();
+            $args ? $controller->{$method}(...$args) :
+                $controller->{$method}();
         }
     }
 
