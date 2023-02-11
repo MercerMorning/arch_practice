@@ -14,7 +14,9 @@ use App\Infrastructure\Exceptions\ExceptionHandler;
 use App\Infrastructure\Queue\QueueStorage;
 use ErrorException;
 use Exception;
+use http\Exception\InvalidArgumentException;
 use Monolog\Level;
+use PharException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -77,6 +79,20 @@ class CommandExceptionHandlerTest extends TestCase
         $this->commandExceptionHandler->handle($command, new ErrorException());
         $command = $queue->take();
         $this->assertEquals($asserted, $command);
+    }
+
+    public function testExecuteWithInvalidArgumentException(): void
+    {
+        $command = new Move($this->createMock(MovableInterface::class));
+        $result = $this->commandExceptionHandler->handle($command, new InvalidArgumentException());
+        $this->assertEquals(ExceptionHandler::class, $result);
+    }
+
+    public function testExecuteWithExceptionInMoveCommand(): void
+    {
+        $command = new Move($this->createMock(MovableInterface::class));
+        $result = $this->commandExceptionHandler->handle($command, new PharException());
+        $this->assertEquals(ExceptionHandler::class, $result);
     }
 }
 

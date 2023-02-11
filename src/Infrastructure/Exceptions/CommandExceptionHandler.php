@@ -7,13 +7,14 @@ use App\Application\Commands\Move;
 use App\Application\Commands\RepeatCommand;
 use App\Application\Commands\SecondRepeatCommand;
 use ErrorException;
-use \Exception;
+use Exception;
+use http\Exception\InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 
 class CommandExceptionHandler implements ExceptionHandlerInterface
 {
-    const EXCEPTION_HANDLERS = [
+    const COMMAND_EXCEPTION_HANDLERS = [
         Move::class => [
             Exception::class => ExceptionHandler::class,
             RuntimeException::class => RuntimeExceptionHandler::class,
@@ -26,7 +27,17 @@ class CommandExceptionHandler implements ExceptionHandlerInterface
         SecondRepeatCommand::class => [
             ErrorException::class => ExceptionHandlerWithLogging::class,
         ],
+
     ];
+
+    const EXCEPTION_HANDLERS = [
+        InvalidArgumentException::class => ExceptionHandler::class,
+    ];
+
+    const COMMAND_HANDLERS = [
+        Move::class => ExceptionHandler::class,
+    ];
+
 
     public function handle(CommandInterface $command, Throwable $exception)
     {
@@ -36,7 +47,10 @@ class CommandExceptionHandler implements ExceptionHandlerInterface
 
     private function getExceptionHandler(string $commandType, string $exceptionClass): ExceptionHandlerInterface
     {
-        $handlerClass = self::EXCEPTION_HANDLERS[$commandType][$exceptionClass];
+        $handlerClass =
+            self::COMMAND_EXCEPTION_HANDLERS[$commandType][$exceptionClass]
+            ?? self::EXCEPTION_HANDLERS[$exceptionClass]
+            ?? self::COMMAND_HANDLERS[$commandType];
         return new $handlerClass();
     }
 }
