@@ -2,8 +2,12 @@
 
 namespace App\Infrastructure;
 
+use App\Application\Commands\Move;
 use App\Application\CreatedMessageReceiver;
+use App\Application\DTO\InterpretBodyDTO;
 use App\Application\DTO\QueueConnectionDTO;
+use App\Domain\Coordinate;
+use App\Domain\MovableInterface;
 use App\Infrastructure\Commands\ReceiveCommand;
 use App\Infrastructure\Env;
 
@@ -51,6 +55,24 @@ class App
         InversionOfControlContainer::setInstance($container);
         $init = new InitScopeBasedIoCImplementation();
         $init->execute();
+
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register","Object.start.move", function (array $arguments){
+            /**
+             * @var $object MovableInterface
+             */
+            $object = $arguments[0];
+            /**
+             * @var $body InterpretBodyDTO
+             */
+            $body = $arguments[1];
+            $object->setVelocity(new Coordinate($body->getOperataionArguments()['velocity'], $body->getOperataionArguments()['velocity']));
+            $moveCommand = new Move($object);
+            $moveCommand->execute();
+        })->execute();
+
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", Move::class, function (array $arguments){
+            return new Move($arguments[0]);
+        })->execute();
 
         InversionOfControlContainer::getInstance()->resolve("IoC.Register", Route::class, function () {
             return new Route();

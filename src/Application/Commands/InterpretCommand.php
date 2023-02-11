@@ -11,7 +11,8 @@ class InterpretCommand implements CommandInterface
     private InterpretBodyDTO $body;
 
     const OPERATIONS = [
-        1 => Move::class
+        1 => Move::class,
+        2 => 'Object.start.move',
     ];
 
     /**
@@ -20,7 +21,7 @@ class InterpretCommand implements CommandInterface
     public function __construct(string $body)
     {
         $body = json_decode($body, 1);
-        $this->body = new InterpretBodyDTO($body['game_id'], $body['object_id'], $body['operation_id']);
+        $this->body = new InterpretBodyDTO($body['game_id'], $body['object_id'], $body['operation_id'], $body['operation_arguments'] ?? []);
     }
 
     public function execute()
@@ -28,7 +29,7 @@ class InterpretCommand implements CommandInterface
         $object = InversionOfControlContainer::getInstance()->resolve(
             "game." . $this->body->getGameId() . ".object." . $this->body->getObjectId()
         );
-        $command = new (self::OPERATIONS[$this->body->getOperationId()])($object);
+        $command = InversionOfControlContainer::getInstance()->resolve(self::OPERATIONS[$this->body->getOperationId()], $object, $this->body);
         QueueStorage::push($command);
     }
 }

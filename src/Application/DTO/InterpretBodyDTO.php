@@ -6,6 +6,24 @@ class InterpretBodyDTO
 {
     private string $gameId;
 
+    private string $objectId;
+    private string $operationId;
+    private array $operataionArguments;
+
+    /**
+     * @param string $gameId
+     * @param string $objectId
+     * @param string $operationId
+     * @param array|null $opertaionArguments
+     */
+    public function __construct(string $gameId, string $objectId, string $operationId, array $operataionArguments = [])
+    {
+        $this->gameId = $gameId;
+        $this->objectId = $objectId;
+        $this->operationId = $operationId;
+        $this->operataionArguments = $operataionArguments;
+    }
+
     /**
      * @return string
      */
@@ -29,19 +47,13 @@ class InterpretBodyDTO
     {
         return $this->operationId;
     }
-    private string $objectId;
-    private string $operationId;
 
     /**
-     * @param string $gameId
-     * @param string $objectId
-     * @param string $operationId
+     * @return array|null
      */
-    public function __construct(string $gameId, string $objectId, string $operationId)
+    public function getOperataionArguments(): ?array
     {
-        $this->gameId = $gameId;
-        $this->objectId = $objectId;
-        $this->operationId = $operationId;
+        return $this->operataionArguments;
     }
 
 
