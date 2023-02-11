@@ -8,7 +8,7 @@ use App\Application\DTO\QueueConnectionDTO;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 
-abstract class AbstractCodeAction
+abstract class AbstractMessageAction
 {
     protected $connection;
     protected $exchange;

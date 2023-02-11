@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure;
 
-use App\Application\CreatedCodeReceiver;
+use App\Application\CreatedMessageReceiver;
 use App\Application\DTO\QueueConnectionDTO;
 use App\Infrastructure\Commands\ReceiveCommand;
 use App\Infrastructure\Env;
@@ -38,7 +38,7 @@ class App
     public function initialize()
     {
         if ($this->console) {
-            $reciever = InversionOfControlContainer::getInstance()->resolve(CreatedCodeReceiver::class);
+            $reciever = InversionOfControlContainer::getInstance()->resolve(CreatedMessageReceiver::class);
             $reciever->receive();
         }
         $router = InversionOfControlContainer::getInstance()->resolve(Route::class);
@@ -65,22 +65,22 @@ class App
          */
         $env = InversionOfControlContainer::getInstance()->resolve(Env::class);
 
-        InversionOfControlContainer::getInstance()->resolve("IoC.Register", CodeGenerator::class, function () use ($env){
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", MessageSender::class, function () use ($env){
             $amqpConnection = new QueueConnectionDTO($env->get('QUEUE_HOST'),
                 $env->get('QUEUE_PORT'),
                 $env->get('QUEUE_USER'),
                 $env->get('QUEUE_PASS'),
                 $env->get('QUEUE_VHOST'));
-            return new CodeGenerator($amqpConnection, $env->get('QUEUE_EXCHANGE'), $env->get('QUEUE_NAME'));
+            return new MessageSender($amqpConnection, $env->get('QUEUE_EXCHANGE'), $env->get('QUEUE_NAME'));
         })->execute();
 
-        InversionOfControlContainer::getInstance()->resolve("IoC.Register", CreatedCodeReceiver::class, function () use ($env){
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", CreatedMessageReceiver::class, function () use ($env){
             $amqpConnection = new QueueConnectionDTO($env->get('QUEUE_HOST'),
                 $env->get('QUEUE_PORT'),
                 $env->get('QUEUE_USER'),
                 $env->get('QUEUE_PASS'),
                 $env->get('QUEUE_VHOST'));
-            return new CreatedCodeReceiver($amqpConnection, $env->get('QUEUE_EXCHANGE'), $env->get('QUEUE_NAME'), $env->get('QUEUE_CONSUMER'));
+            return new CreatedMessageReceiver($amqpConnection, $env->get('QUEUE_EXCHANGE'), $env->get('QUEUE_NAME'), $env->get('QUEUE_CONSUMER'));
         })->execute();
     }
 }

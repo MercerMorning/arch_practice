@@ -8,5 +8,5 @@ return [
     'QUEUE_VHOST' => '/',
     'QUEUE_EXCHANGE' => 'bank_exchange',
     'QUEUE_CONSUMER' => 'consumer',
-    'QUEUE_NAME' => 'codes',
+    'QUEUE_NAME' => 'commands',
 ];

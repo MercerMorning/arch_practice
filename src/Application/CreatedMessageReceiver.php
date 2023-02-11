@@ -4,9 +4,9 @@ namespace App\Application;
 
 
 use App\Application\DTO\QueueConnectionDTO;
-use App\Infrastructure\AbstractCodeAction;
+use App\Infrastructure\AbstractMessageAction;
 
-class CreatedCodeReceiver extends AbstractCodeAction
+class CreatedMessageReceiver extends AbstractMessageAction
 {
     private $consumer;
 
@@ -20,7 +20,7 @@ class CreatedCodeReceiver extends AbstractCodeAction
     {
         $this->channel->basic_consume($this->queue, $this->consumer, false, false, false, false, function ($message) {
             echo $this->makeMessageBody($message->body);
-//            $this->sendNotification($message->body);
+
             $message->ack();
         });
         register_shutdown_function(function ($channel, $connection) {
@@ -36,9 +36,4 @@ class CreatedCodeReceiver extends AbstractCodeAction
     {
         return '\n--------\n' . $messageBody . '\n--------\n';
     }
-
-//    private function sendNotification($messageBody)
-//    {
-//        mail(EMAIL, 'band_codes', $messageBody);
-//    }
 }
