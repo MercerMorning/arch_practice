@@ -74,6 +74,6 @@ class InterpretCommandTest extends TestCase
         $object = InversionOfControlContainer::getInstance()->resolve(
             "game." . $gameId . ".object." . $objectId);
 
-        $this->assertEquals(new Coordinate(4, 4), $object->getPosition());
+        $this->assertEquals(new Coordinate(3, 3), $object->getPosition());
     }
 }

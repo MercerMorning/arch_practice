@@ -12,7 +12,7 @@ class InterpretCommand implements CommandInterface
 
     const OPERATIONS = [
         1 => Move::class,
-        2 => 'Object.start.move',
+        2 => ObjectStartMoveCommand::class,
     ];
 
     /**

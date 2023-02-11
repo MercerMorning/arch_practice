@@ -3,6 +3,7 @@
 namespace App\Infrastructure;
 
 use App\Application\Commands\Move;
+use App\Application\Commands\ObjectStartMoveCommand;
 use App\Application\CreatedMessageReceiver;
 use App\Application\DTO\InterpretBodyDTO;
 use App\Application\DTO\QueueConnectionDTO;
@@ -68,6 +69,11 @@ class App
             $object->setVelocity(new Coordinate($body->getOperataionArguments()['velocity'], $body->getOperataionArguments()['velocity']));
             $moveCommand = new Move($object);
             $moveCommand->execute();
+        })->execute();
+
+
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register",ObjectStartMoveCommand::class, function (array $arguments){
+            return new ObjectStartMoveCommand($arguments[0], $arguments[1]);
         })->execute();
 
         InversionOfControlContainer::getInstance()->resolve("IoC.Register", Move::class, function (array $arguments){
