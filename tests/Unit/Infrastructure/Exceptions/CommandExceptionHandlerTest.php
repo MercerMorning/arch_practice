@@ -14,7 +14,7 @@ use App\Infrastructure\Exceptions\ExceptionHandler;
 use App\Infrastructure\Queue\QueueStorage;
 use ErrorException;
 use Exception;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use Monolog\Level;
 use PharException;
 use PHPUnit\Framework\TestCase;

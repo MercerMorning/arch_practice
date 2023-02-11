@@ -8,7 +8,7 @@ use App\Application\Commands\RepeatCommand;
 use App\Application\Commands\SecondRepeatCommand;
 use ErrorException;
 use Exception;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 
