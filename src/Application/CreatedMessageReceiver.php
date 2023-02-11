@@ -3,8 +3,12 @@ namespace App\Application;
 
 
 
+use App\Application\Commands\InterpretCommand;
 use App\Application\DTO\QueueConnectionDTO;
 use App\Infrastructure\AbstractMessageAction;
+use App\Infrastructure\Exceptions\CommandExceptionHandler;
+use App\Infrastructure\Queue\QueueListener;
+use App\Infrastructure\Queue\QueueStorage;
 
 class CreatedMessageReceiver extends AbstractMessageAction
 {
@@ -18,16 +22,19 @@ class CreatedMessageReceiver extends AbstractMessageAction
 
     public function receive()
     {
+        $listener = new QueueListener(new QueueStorage(), new CommandExceptionHandler());
         $this->channel->basic_consume($this->queue, $this->consumer, false, false, false, false, function ($message) {
-            echo $this->makeMessageBody($message->body);
-
+            QueueStorage::push(new InterpretCommand($message->body));
+            echo $message->body . PHP_EOL;
             $message->ack();
         });
+
         register_shutdown_function(function ($channel, $connection) {
             $channel->close();
             $connection->close();
         }, $this->channel, $this->connection);
         while ($this->channel->is_consuming()) {
+            $listener->listen();
             $this->channel->wait();
         }
     }

@@ -20,6 +20,7 @@ class SendCommandController
             'game_id' => $_POST['game_id'],
             'object_id' => $_POST['object_id'],
             'operation_id' => $_POST['operation_id'],
+            'operation_arguments' => $_POST['operation_arguments'],
         ];
         $this->codeGeneratorService->send(json_encode($body));
         echo 'OK';

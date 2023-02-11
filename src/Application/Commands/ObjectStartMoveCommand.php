@@ -3,7 +3,6 @@
 namespace App\Application\Commands;
 
 use App\Application\DTO\InterpretBodyDTO;
-use App\Application\Helpers\CoordinatesSummator;
 use App\Domain\MovableInterface;
 use App\Infrastructure\InversionOfControlContainer;
 
