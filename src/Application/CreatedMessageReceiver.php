@@ -7,6 +7,7 @@ use App\Application\Commands\InterpretCommand;
 use App\Application\DTO\QueueConnectionDTO;
 use App\Infrastructure\AbstractMessageAction;
 use App\Infrastructure\Exceptions\CommandExceptionHandler;
+use App\Infrastructure\InversionOfControlContainer;
 use App\Infrastructure\Queue\QueueListener;
 use App\Infrastructure\Queue\QueueStorage;
 
@@ -22,7 +23,7 @@ class CreatedMessageReceiver extends AbstractMessageAction
 
     public function receive()
     {
-        $listener = new QueueListener(new QueueStorage(), new CommandExceptionHandler());
+        $listener = InversionOfControlContainer::getInstance()->resolve(QueueListener::class);
         $this->channel->basic_consume($this->queue, $this->consumer, false, false, false, false, function ($message) {
             QueueStorage::push(new InterpretCommand($message->body));
             echo $message->body . PHP_EOL;
@@ -37,10 +38,5 @@ class CreatedMessageReceiver extends AbstractMessageAction
             $listener->listen();
             $this->channel->wait();
         }
-    }
-
-    private function makeMessageBody($messageBody)
-    {
-        return '\n--------\n' . $messageBody . '\n--------\n';
     }
 }

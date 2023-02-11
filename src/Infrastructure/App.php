@@ -11,6 +11,9 @@ use App\Domain\Coordinate;
 use App\Domain\MovableInterface;
 use App\Infrastructure\Commands\ReceiveCommand;
 use App\Infrastructure\Env;
+use App\Infrastructure\Exceptions\CommandExceptionHandler;
+use App\Infrastructure\Queue\QueueListener;
+use App\Infrastructure\Queue\QueueStorage;
 
 class App
 {
@@ -74,6 +77,10 @@ class App
 
         InversionOfControlContainer::getInstance()->resolve("IoC.Register",ObjectStartMoveCommand::class, function (array $arguments){
             return new ObjectStartMoveCommand($arguments[0], $arguments[1]);
+        })->execute();
+
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register",QueueListener::class, function (array $arguments){
+            return new QueueListener(new QueueStorage(), new CommandExceptionHandler());
         })->execute();
 
         InversionOfControlContainer::getInstance()->resolve("IoC.Register", Move::class, function (array $arguments){
