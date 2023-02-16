@@ -9,4 +9,6 @@ return [
     'QUEUE_EXCHANGE' => '',
     'QUEUE_CONSUMER' => '',
     'QUEUE_NAME' => '',
+
+    'AUTH_JWT_EXECUTE_URL' => ''
 ];

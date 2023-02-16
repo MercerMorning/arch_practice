@@ -9,4 +9,6 @@ return [
     'QUEUE_EXCHANGE' => 'bank_exchange',
     'QUEUE_CONSUMER' => 'consumer',
     'QUEUE_NAME' => 'commands',
+
+    'AUTH_JWT_EXECUTE_URL' => 'http://192.168.0.105/api/execute'
 ];
