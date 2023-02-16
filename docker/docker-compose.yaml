@@ -5,9 +5,6 @@ services:
     restart: always
     container_name:     php_main_patterns
     build: php-fpm
-    ports:
-      - '9083:9000'
-      - '8093:8090'
     volumes:
       - ../:/app
       - ./php-fpm/php-ini.ini:/usr/local/etc/php/conf.d/90-custom.ini

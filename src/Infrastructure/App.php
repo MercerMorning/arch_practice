@@ -14,6 +14,7 @@ use App\Infrastructure\Env;
 use App\Infrastructure\Exceptions\CommandExceptionHandler;
 use App\Infrastructure\Queue\QueueListener;
 use App\Infrastructure\Queue\QueueStorage;
+use GuzzleHttp\Client;
 
 class App
 {
@@ -59,6 +60,10 @@ class App
         InversionOfControlContainer::setInstance($container);
         $init = new InitScopeBasedIoCImplementation();
         $init->execute();
+
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register",Client::class, function (array $arguments){
+            return new Client();
+        })->execute();
 
         InversionOfControlContainer::getInstance()->resolve("IoC.Register","Object.start.move", function (array $arguments){
             /**
