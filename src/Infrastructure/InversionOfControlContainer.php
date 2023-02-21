@@ -3,25 +3,37 @@
 namespace App\Infrastructure;
 
 use Closure;
+use InvalidArgumentException;
 
 class InversionOfControlContainer
 {
-    /**
-     * @var $binded Closure[]
-     */
-    protected $binded = [];
+    public static Closure $strategy;
 
     public function __construct()
     {
-        $this->binded['IoC.Register'] = function (array $args) {
-            $this->binded[$args[0]] = $args[1];
+        self::$strategy = function ($key, array $arguments) {
+            if ($key == 'IoC.SetupStrategy') {
+                return new SetupStrategyCommand($this, $arguments[0]);
+            } elseif ($key == 'IoC.Default') {
+                return $this->defaultStrategy();
+            } else {
+                throw new InvalidArgumentException('Unknown IoC dependency');
+            }
         };
     }
 
-    public function resolve(string $key, ...$args)
+    public static function resolve(string $key, ...$args)
     {
-        if (isset($this->binded[$key])) {
-            return $this->binded[$key]($args);
-        }
+        $strategy = self::$strategy;
+        return $strategy($key, $args);
     }
+
+    private function defaultStrategy()
+    {
+        return function () {
+            echo 'defaultStrategy';
+        };
+    }
+
+
 }
