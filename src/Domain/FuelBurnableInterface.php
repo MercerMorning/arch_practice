@@ -7,5 +7,5 @@ interface FuelBurnableInterface
 
     public function setLevel(int $level): void;
 
-    public function getVelocity(): int;
+    public function getConsumption(): int;
 }

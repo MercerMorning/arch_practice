@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\Command;
 
-use App\Application\Commands\BurnFuel;
+use App\Application\Commands\BurnFuelCommand;
 use App\Application\Exceptions\BurnFuelException;
 use App\Domain\FuelBurnableInterface;
 use Exception;
@@ -15,7 +15,7 @@ class BurnFuelTest extends TestCase
     public function setUp(): void
     {
         $this->fuelBurnable = $this->createMock(FuelBurnableInterface::class);
-        $this->burnFuel     = new BurnFuel($this->fuelBurnable);
+        $this->burnFuel     = new BurnFuelCommand($this->fuelBurnable);
     }
 
     /**
@@ -30,7 +30,7 @@ class BurnFuelTest extends TestCase
             ->method('getLevel')
             ->willReturn($input['level']);
         $this->fuelBurnable->expects($this->once())
-            ->method('getVelocity')
+            ->method('getConsumption')
             ->willReturn($input['velocity']);
         $this->fuelBurnable->expects($this->once())
             ->method('setLevel')
@@ -72,11 +72,10 @@ class BurnFuelTest extends TestCase
             ->method('getLevel')
             ->willReturn($input['level']);
         $this->fuelBurnable->expects($this->once())
-            ->method('getVelocity')
+            ->method('getConsumption')
             ->willReturn($input['velocity']);
         $this->expectException(BurnFuelException::class);
         $this->burnFuel->execute();
-
     }
 
     /**
