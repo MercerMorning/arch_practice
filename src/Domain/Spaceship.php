@@ -30,6 +30,11 @@ class Spaceship implements MovableInterface
 
     public function setVelocity(Coordinate $velocity)
     {
-        $this->velocity = $velocity;
+        return $this->velocity;
+    }
+
+    public function createSnapshot()
+    {
+        return new MovableSnapshot($this, $this->position, $this->velocity);
     }
 }

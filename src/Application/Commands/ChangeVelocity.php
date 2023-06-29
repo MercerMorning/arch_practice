@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\Commands;
 
 use App\Application\Helpers\VelocityChanger;
 use App\Domain\VelocityChangableInterface;
-use Exception;
 
 class ChangeVelocity implements CommandInterface
 {
@@ -12,7 +13,8 @@ class ChangeVelocity implements CommandInterface
     private float $velocityCorrection;
 
     /**
-     * @param $object
+     * @param VelocityChangableInterface $object
+     * @param float $velocityCorrection
      */
     public function __construct(VelocityChangableInterface $object, float $velocityCorrection)
     {

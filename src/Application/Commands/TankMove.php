@@ -4,17 +4,16 @@ namespace App\Application\Commands;
 
 use App\Application\Helpers\CoordinatesSummator;
 use App\Domain\MovableInterface;
-use App\Domain\MovableSnapshot;
+use App\Domain\TankOperationsMovableInterface;
 
-class Move implements CommandInterface, CommandTransactionInterface
+class TankMove implements CommandInterface
 {
     private MovableInterface $object;
-    private MovableSnapshot $backup;
 
     /**
      * @param $object
      */
-    public function __construct(MovableInterface $object)
+    public function __construct(TankOperationsMovableInterface $object)
     {
         $this->object = $object;
     }
@@ -24,17 +23,5 @@ class Move implements CommandInterface, CommandTransactionInterface
         $this->object->setPosition(
             CoordinatesSummator::makeSum($this->object->getPosition(), $this->object->getVelocity())
         );
-    }
-
-    public function makeBackup()
-    {
-        $this->backup = $this->object->createSnapshot();
-    }
-
-    public function undo()
-    {
-        if ($this->backup !== null) {
-            $this->backup->restore();
-        }
     }
 }
