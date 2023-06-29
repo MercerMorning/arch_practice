@@ -20,4 +20,6 @@ interface QueueStorageInterface
      * @return void
      */
     public static function push(CommandInterface $command): void;
+
+    public static function unshift(CommandInterface $command): void;
 }

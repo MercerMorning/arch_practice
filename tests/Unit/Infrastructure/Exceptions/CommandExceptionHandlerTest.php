@@ -37,7 +37,6 @@ class CommandExceptionHandlerTest extends TestCase
         $queue = new QueueStorage();
         $command = new Move($this->createMock(MovableInterface::class));
         $asserted = new RepeatCommand($command);
-        $queue::push($command);
         $this->commandExceptionHandler->handle($command, new RuntimeException());
         $this->assertEquals($asserted, $queue->take());
     }
@@ -59,6 +58,7 @@ class CommandExceptionHandlerTest extends TestCase
         $command = new Move($this->createMock(MovableInterface::class));
         $asserted = new SecondRepeatCommand(new RepeatCommand($command));
         $this->commandExceptionHandler->handle($command, new ErrorException());
+
         $command = $queue->take();
         $this->commandExceptionHandler->handle($command, new ErrorException());
         $command = $queue->take();

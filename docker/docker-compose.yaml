@@ -5,10 +5,29 @@ services:
     restart: always
     container_name:     php_main_patterns
     build: php-fpm
-    ports:
-      - '9083:9000'
-      - '8093:8090'
     volumes:
       - ../:/app
       - ./php-fpm/php-ini.ini:/usr/local/etc/php/conf.d/90-custom.ini
+
+  nginx:
+    image: nginx
+    container_name: 'nginx'
+    working_dir: /app
+    ports:
+      - 7777:80
+    volumes:
+      - ../:/app
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  rabbitmq:
+    image: rabbitmq:3.7.5-management
+    working_dir: /app
+    hostname: rabbit-mq
+    container_name: 'rabbit-mq'
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
 
