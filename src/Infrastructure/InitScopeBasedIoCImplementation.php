@@ -2,6 +2,11 @@
 
 namespace App\Infrastructure;
 
+use App\Infrastructure\Queue\QueueStorage;
+use App\Infrastructure\Queue\QueueStorageInterface;
+use App\Infrastructure\Queue\Statements\Common;
+use App\Infrastructure\Queue\Statements\Finished;
+use App\Infrastructure\Queue\Statements\MoveTo;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -108,5 +113,18 @@ class InitScopeBasedIoCImplementation
             ScopeBasedResolveDependencyStrategy::strategy()
         )->execute();
         InversionOfControlContainer::getInstance()->resolve("Scopes.New", 'default', $scope)->execute();
+
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", QueueStorageInterface::class, function () {
+            return new QueueStorage();
+        })->execute();
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", 'QueryListener.CommonStatement', function () {
+            return new Common();
+        })->execute();
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", 'QueryListener.FinishedStatement', function () {
+            return new Finished();
+        })->execute();
+        InversionOfControlContainer::getInstance()->resolve("IoC.Register", 'QueryListener.MoveToStatement', function () {
+            return new MoveTo();
+        })->execute();
     }
 }
