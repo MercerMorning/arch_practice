@@ -6,6 +6,7 @@ use App\Application\Commands\AddForceQueueStopCommandToQueue;
 use App\Application\Commands\AddSoftQueueStopCommandToQueue;
 use App\Application\Commands\CommandInterface;
 use App\Application\Commands\MoveToCommand;
+use App\Application\Commands\RunCommand;
 use App\Infrastructure\Exceptions\CommandExceptionHandler;
 use App\Infrastructure\Exceptions\ExceptionHandlerInterface;
 use App\Infrastructure\InitScopeBasedIoCImplementation;
@@ -13,6 +14,7 @@ use App\Infrastructure\InversionOfControlContainer;
 use App\Infrastructure\Queue\QueueListener;
 use App\Infrastructure\Queue\QueueStorage;
 use App\Infrastructure\Queue\QueueStorageInterface;
+use App\Infrastructure\Queue\SpareQueueStorage;
 use App\Infrastructure\Queue\Statements\Common;
 use App\Infrastructure\Queue\Statements\Finished;
 use App\Infrastructure\Queue\Statements\MoveTo;
@@ -290,5 +292,157 @@ class ThreadTest extends TestCase
         assertEquals(new MoveTo(), $listener->getStatement());
     }
 
+    public function testMoveToAnotherQueue()
+    {
+        SpareQueueStorage::$queue = [];
+        $container = new InversionOfControlContainer();
+        InversionOfControlContainer::setInstance($container);
+        $command = new InitScopeBasedIoCImplementation();
+        $command->execute();
 
+
+        $container->resolve("IoC.Register", QueueStorageInterface::class, function () {
+            return new QueueStorage();
+        })->execute();
+        $container->resolve("IoC.Register", ExceptionHandlerInterface::class, function () {
+            return new CommandExceptionHandler();
+        })->execute();
+
+
+        $container->resolve("IoC.Register", QueueListener::class, function () {
+            return new QueueListener(
+                InversionOfControlContainer::getInstance()->resolve(QueueStorageInterface::class),
+                InversionOfControlContainer::getInstance()->resolve(ExceptionHandlerInterface::class),
+            );
+        })->execute();
+
+        /**
+         * @var $listener QueueListener
+         */
+        $listener = $container->resolve(QueueListener::class);
+        $moveCommand = new MoveToCommand();
+        $mockCommandOne = $this->createMock(CommandInterface::class);
+        $mockCommandTwo = $this->createMock(CommandInterface::class);
+        $commands =
+            [
+                $moveCommand,
+                $mockCommandOne,
+                $mockCommandTwo,
+            ];
+        foreach ($commands as $command) {
+            QueueStorage::push($command);
+        }
+
+        $listener->listen();
+
+        assertEquals([$mockCommandOne, $mockCommandTwo], SpareQueueStorage::$queue);
+    }
+
+    public function testHardStopWithMoveToStatement()
+    {
+        $container = new InversionOfControlContainer();
+        InversionOfControlContainer::setInstance($container);
+        $command = new InitScopeBasedIoCImplementation();
+        $command->execute();
+
+
+        $container->resolve("IoC.Register", QueueStorageInterface::class, function () {
+            return new QueueStorage();
+        })->execute();
+        $container->resolve("IoC.Register", ExceptionHandlerInterface::class, function () {
+            return new CommandExceptionHandler();
+        })->execute();
+
+
+        $container->resolve("IoC.Register", QueueListener::class, function () {
+            return new QueueListener(
+                InversionOfControlContainer::getInstance()->resolve(QueueStorageInterface::class),
+                InversionOfControlContainer::getInstance()->resolve(ExceptionHandlerInterface::class),
+            );
+        })->execute();
+
+        $container->resolve("IoC.Register", 'stopThread', function () {
+            return new AddSoftQueueStopCommandToQueue(); // Hard stop
+        })->execute();
+
+        /**
+         * @var $listener QueueListener
+         */
+        $listener = $container->resolve(QueueListener::class);
+
+
+        /**
+         * @return MockObject[]
+         */
+        $mocks = [
+            $this->createMock(CommandInterface::class),
+            $this->createMock(CommandInterface::class),
+        ];
+        $mocks[0]->expects(self::never())->method('execute');
+        $mocks[1]->expects(self::never())->method('execute');
+
+        $commands =
+            [
+                new MoveToCommand(),
+                $mocks[0],
+                $mocks[1],
+            ];
+
+
+        foreach ($commands as $command) {
+            QueueStorage::push($command);
+        }
+
+        $container->resolve("stopThread")->execute();
+
+        $listener->listen();
+        assertEquals(new Finished(), $listener->getStatement());
+    }
+
+    public function testRunCommandWithMoveToStatement()
+    {
+        SpareQueueStorage::$queue = [];
+        $container = new InversionOfControlContainer();
+        InversionOfControlContainer::setInstance($container);
+        $command = new InitScopeBasedIoCImplementation();
+        $command->execute();
+
+
+        $container->resolve("IoC.Register", QueueStorageInterface::class, function () {
+            return new QueueStorage();
+        })->execute();
+        $container->resolve("IoC.Register", ExceptionHandlerInterface::class, function () {
+            return new CommandExceptionHandler();
+        })->execute();
+
+
+        $container->resolve("IoC.Register", QueueListener::class, function () {
+            return new QueueListener(
+                InversionOfControlContainer::getInstance()->resolve(QueueStorageInterface::class),
+                InversionOfControlContainer::getInstance()->resolve(ExceptionHandlerInterface::class),
+            );
+        })->execute();
+
+        /**
+         * @var $listener QueueListener
+         */
+        $listener = $container->resolve(QueueListener::class);
+        $moveCommand = new MoveToCommand();
+        $mockCommandOne = $this->createMock(CommandInterface::class);
+        $mockCommandTwo = $this->createMock(CommandInterface::class);
+        $commands =
+            [
+                $moveCommand,
+                $mockCommandOne,
+                $mockCommandTwo,
+                new RunCommand()
+            ];
+        foreach ($commands as $command) {
+            QueueStorage::push($command);
+        }
+
+        $listener->listen();
+
+        assertEquals(new Common(), $listener->getStatement());
+    }
 }

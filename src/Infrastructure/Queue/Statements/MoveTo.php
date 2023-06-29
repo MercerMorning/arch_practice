@@ -4,21 +4,19 @@ namespace App\Infrastructure\Queue\Statements;
 
 use App\Application\Commands\MoveToCommand;
 use App\Application\Commands\QueueStopCommand;
+use App\Application\Commands\RunCommand;
 use App\Infrastructure\Exceptions\ExceptionHandlerInterface;
 use App\Infrastructure\Queue\QueueStorageInterface;
+use App\Infrastructure\Queue\SpareQueueStorage;
 use \Exception;
 
 class MoveTo implements StatementInterface
 {
     const COMMAND_STATEMENTS = [
         QueueStopCommand::class => Finished::class,
-        MoveToCommand::class => MoveTo::class
+        RunCommand::class => Common::class
     ];
 
-    public function __construct()
-    {
-
-    }
     public function handle(
         QueueStorageInterface $queueStorage,
         ExceptionHandlerInterface $exceptionHandler
@@ -26,11 +24,7 @@ class MoveTo implements StatementInterface
     {
         $queueItem = $queueStorage->take();
         if ($queueItem) {
-            try {
-                $queueItem->execute();
-            } catch (Exception $exception) {
-                $exceptionHandler->handle($queueItem, $exception);
-            }
+            SpareQueueStorage::push($queueItem);
             $statement = self::COMMAND_STATEMENTS[$queueItem::class] ?? null;
             if ($statement) {
                 return new $statement();
