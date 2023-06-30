@@ -18,7 +18,8 @@
         "symfony/console": "^6.2",
         "php-amqplib/php-amqplib": "^3.5",
         "guzzlehttp/guzzle": "^7.5",
-        "symfony/monolog-bundle": "^3.8"
+        "symfony/monolog-bundle": "^3.8",
+        "doctrine/collections": "^2.1"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit tests"

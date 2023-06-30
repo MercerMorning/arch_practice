@@ -2,10 +2,12 @@
 
 namespace App\Infrastructure\Exceptions;
 
+use App\Application\Commands\CheckCollisionCommand;
 use App\Application\Commands\CommandInterface;
 use App\Application\Commands\Move;
 use App\Application\Commands\RepeatCommand;
 use App\Application\Commands\SecondRepeatCommand;
+use App\Application\Exceptions\CollisionException;
 use ErrorException;
 use \Exception;
 use RuntimeException;
@@ -18,6 +20,9 @@ class CommandExceptionHandler implements ExceptionHandlerInterface
             Exception::class => ExceptionHandler::class,
             RuntimeException::class => RuntimeExceptionHandler::class,
             ErrorException::class => ErrorExceptionHandler::class
+        ],
+        CheckCollisionCommand::class => [
+            CollisionException::class => ExceptionHandler::class,
         ],
         RepeatCommand::class => [
             RuntimeException::class => ExceptionHandlerWithLogging::class,
